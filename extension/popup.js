@@ -6,6 +6,7 @@ const API_BASE = 'https://thegiddylist.com';
 let currentProduct = null;
 let kids = [];
 let isLoggedIn = false;
+let authToken = null;
 
 // DOM Elements
 const loadingState = document.getElementById('loading');
@@ -30,8 +31,16 @@ async function init() {
   showState('loading');
 
   try {
-    // Check auth status
-    const authData = await checkAuth();
+    // Get auth token from cookies
+    authToken = await getAuthToken();
+
+    if (!authToken) {
+      showState('not-logged-in');
+      return;
+    }
+
+    // Check auth status and get kids
+    const authData = await checkAuth(authToken);
 
     if (!authData.isLoggedIn) {
       showState('not-logged-in');
@@ -68,14 +77,50 @@ async function init() {
   }
 }
 
+// Get Supabase auth token from cookies
+async function getAuthToken() {
+  return new Promise((resolve) => {
+    chrome.cookies.getAll({ domain: 'thegiddylist.com' }, (cookies) => {
+      // Look for Supabase auth cookies
+      // Supabase uses different cookie naming patterns
+      const authCookie = cookies.find(c =>
+        c.name.includes('auth-token') ||
+        c.name.includes('access-token') ||
+        c.name.startsWith('sb-') && c.name.includes('auth')
+      );
+
+      if (authCookie) {
+        resolve(authCookie.value);
+        return;
+      }
+
+      // Also check for base64 encoded session
+      const sessionCookie = cookies.find(c =>
+        c.name.includes('session') ||
+        (c.name.startsWith('sb-') && c.value.length > 100)
+      );
+
+      if (sessionCookie) {
+        resolve(sessionCookie.value);
+        return;
+      }
+
+      // Log all cookies for debugging
+      console.log('Available cookies:', cookies.map(c => c.name));
+      resolve(null);
+    });
+  });
+}
+
 // Check authentication status
-async function checkAuth() {
+async function checkAuth(token) {
   try {
     const response = await fetch(`${API_BASE}/api/extension/auth`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     });
 
@@ -207,7 +252,8 @@ async function addToWishlist() {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
       },
       body: JSON.stringify({
         kidId: kidId,
