@@ -8,43 +8,43 @@ interface AnimatedImageGridProps {
   className?: string;
 }
 
-// Bright, colorful, joyful images - kids, parties, gifts, family moments
+// Full age range (0-18): kids, tweens, teens, and aspirational product shots
 const HERO_IMAGE_SETS = [
-  // Row 1, Column 1
+  // Row 1, Column 1 - Kids & Family
   [
-    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=900&fit=crop", // Happy kids
-    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&h=900&fit=crop", // Colorful toys
-    "https://images.unsplash.com/photo-1485546246426-74dc88dec4d9?w=800&h=900&fit=crop", // Kids laughing
-  ],
-  // Row 1, Column 2
-  [
-    "https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?w=800&h=900&fit=crop", // Kids playing
-    "https://images.unsplash.com/photo-1484665754804-74b091211472?w=800&h=900&fit=crop", // Birthday party
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=800&h=900&fit=crop", // Toddler playing
-  ],
-  // Row 1, Column 3 (TOP RIGHT - fixed)
-  [
-    "https://images.unsplash.com/photo-1520483601560-389dff434fdf?w=800&h=900&fit=crop", // Kid opening gift excited
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&h=900&fit=crop", // Colorful balloons
-    "https://images.unsplash.com/photo-1513807016779-d51c0c026263?w=800&h=900&fit=crop", // Birthday candles
-  ],
-  // Row 2, Column 1
-  [
-    "https://images.unsplash.com/photo-1542037179399-e21bba394791?w=800&h=900&fit=crop", // Gift unwrapping
+    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=800&h=900&fit=crop", // Excited kid with gift
     "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=800&h=900&fit=crop", // Happy family
-    "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=800&h=900&fit=crop", // Birthday cake
+    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=900&fit=crop", // Happy kids
   ],
-  // Row 2, Column 2
+  // Row 1, Column 2 - Teen Lifestyle
   [
-    "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&h=900&fit=crop", // Child with gift
-    "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=800&h=900&fit=crop", // Kids crafts
-    "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=800&h=900&fit=crop", // Kid smiling
+    "https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=800&h=900&fit=crop", // Teen girl with headphones
+    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=900&fit=crop", // Teens hanging out
+    "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&h=900&fit=crop", // Teen friends laughing
   ],
-  // Row 2, Column 3 (BOTTOM RIGHT - fixed)
+  // Row 1, Column 3 (TOP RIGHT) - Products & Aspirational
+  [
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&h=900&fit=crop", // Cool sneakers
+    "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=800&h=900&fit=crop", // Tech gadgets flatlay
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=900&fit=crop", // Colorful gifts
+  ],
+  // Row 2, Column 1 - Mixed Ages Activity
+  [
+    "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=800&h=900&fit=crop", // Teen gaming/VR
+    "https://images.unsplash.com/photo-1484665754804-74b091211472?w=800&h=900&fit=crop", // Birthday celebration
+    "https://images.unsplash.com/photo-1542037179399-e21bba394791?w=800&h=900&fit=crop", // Gift unwrapping excitement
+  ],
+  // Row 2, Column 2 - Teen Energy
+  [
+    "https://images.unsplash.com/photo-1488161628813-04466f0016e4?w=800&h=900&fit=crop", // Teen with skateboard
+    "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&h=900&fit=crop", // Child opening gift
+    "https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=900&fit=crop", // Friends having fun
+  ],
+  // Row 2, Column 3 (BOTTOM RIGHT) - Gift & Product Focus
   [
     "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&h=900&fit=crop", // Wrapped gifts
-    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&h=900&fit=crop", // Gift boxes colorful
-    "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=800&h=900&fit=crop", // Present ribbons
+    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&h=900&fit=crop", // Colorful gift boxes
+    "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=800&h=900&fit=crop", // Birthday celebration
   ],
 ];
 
