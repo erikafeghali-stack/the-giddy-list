@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Giddy List</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="logo">The Giddy List</h1>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="state">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Not Logged In State -->
+    <div id="not-logged-in" class="state hidden">
+      <div class="icon-container">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <h2>Log in to add items</h2>
+      <p>Sign in to The Giddy List to save gifts to your kids' wishlists.</p>
+      <a href="https://thegiddylist.com/login" target="_blank" class="btn btn-primary">
+        Log In
+      </a>
+    </div>
+
+    <!-- No Kids State -->
+    <div id="no-kids" class="state hidden">
+      <div class="icon-container">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <h2>Add a kid first</h2>
+      <p>Create a profile for your child to start building their wishlist.</p>
+      <a href="https://thegiddylist.com/my-kids?add=true" target="_blank" class="btn btn-primary">
+        Add a Kid
+      </a>
+    </div>
+
+    <!-- Product Scraping Failed State -->
+    <div id="scrape-failed" class="state hidden">
+      <div class="icon-container warning">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h2>Couldn't find product</h2>
+      <p>We couldn't detect a product on this page. Try clicking on a product page.</p>
+      <a href="https://thegiddylist.com" target="_blank" class="btn btn-secondary">
+        Open The Giddy List
+      </a>
+    </div>
+
+    <!-- Main Product View -->
+    <div id="product-view" class="state hidden">
+      <!-- Product Preview -->
+      <div class="product-preview">
+        <div class="product-image-container">
+          <img id="product-image" src="" alt="Product" class="product-image">
+        </div>
+        <div class="product-info">
+          <h2 id="product-title" class="product-title">Product Title</h2>
+          <p id="product-price" class="product-price">$0.00</p>
+          <p id="product-domain" class="product-domain">amazon.com</p>
+        </div>
+      </div>
+
+      <!-- Wishlist Selection -->
+      <div class="form-group">
+        <label for="kid-select">Add to wishlist:</label>
+        <select id="kid-select" class="select">
+          <option value="">Select a kid...</option>
+        </select>
+      </div>
+
+      <!-- Add Button -->
+      <button id="add-btn" class="btn btn-primary btn-full" disabled>
+        Add to Wishlist
+      </button>
+
+      <!-- Success Message -->
+      <div id="success-message" class="success-message hidden">
+        <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Added to wishlist!</span>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="error-message hidden">
+        <span id="error-text">Something went wrong</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <a href="https://thegiddylist.com" target="_blank">Open The Giddy List</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
