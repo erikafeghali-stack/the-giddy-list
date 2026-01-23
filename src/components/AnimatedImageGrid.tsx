@@ -48,37 +48,37 @@ const HERO_IMAGE_SETS = [
   ],
 ];
 
-// Standard grid images (smaller version)
+// Standard grid images (smaller version) - Full age range
 const STANDARD_IMAGE_SETS = [
   [
-    "https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=500&fit=crop", // Kid excited
+    "https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=400&h=500&fit=crop", // Teen headphones
+    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=500&fit=crop", // Gifts
   ],
   [
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=400&h=500&fit=crop", // Teen gaming
+    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=500&fit=crop", // Happy kids
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=500&fit=crop", // Sneakers
   ],
   [
-    "https://images.unsplash.com/photo-1542037179399-e21bba394791?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=500&fit=crop", // Teens hanging out
+    "https://images.unsplash.com/photo-1542037179399-e21bba394791?w=400&h=500&fit=crop", // Gift unwrapping
+    "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&h=500&fit=crop", // Tech gadgets
   ],
   [
-    "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1513807016779-d51c0c026263?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1488161628813-04466f0016e4?w=400&h=500&fit=crop", // Teen skateboard
+    "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=400&h=500&fit=crop", // Family
+    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=500&fit=crop", // Gift boxes
   ],
   [
-    "https://images.unsplash.com/photo-1484665754804-74b091211472?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=500&fit=crop", // Teen friends
+    "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&h=500&fit=crop", // Child gift
+    "https://images.unsplash.com/photo-1484665754804-74b091211472?w=400&h=500&fit=crop", // Birthday
   ],
   [
-    "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=400&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1542037179399-e21bba394791?w=400&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=400&h=500&fit=crop", // Friends fun
+    "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=400&h=500&fit=crop", // Celebration
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop", // Colorful gifts
   ],
 ];
 
