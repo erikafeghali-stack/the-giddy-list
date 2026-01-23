@@ -42,6 +42,14 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "The Giddy List",
   description: "Keep track of wishlists and gift registries for your little ones",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-icon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({
