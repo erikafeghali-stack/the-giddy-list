@@ -814,7 +814,6 @@ function KidEditor({
         clothing_bottom: "",
         pajamas: "",
         shoe_size: "",
-        snow_boots: "",
         socks: "",
         underwear_size: "",
         diaper_or_underwear: null,
