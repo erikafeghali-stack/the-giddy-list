@@ -927,3 +927,23 @@ To https://github.com/erikafeghali-stack/the-giddy-list.git
 
 📝 Changes detected, waiting 10 seconds for you to finish editing...
 🔄 Deploying changes...
+[main 5f76d4a] Auto-deploy: 2026-01-23 16:35:54
+ Committer: Erika Hester <erikahester@Erikas-MacBook-Air.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 20 insertions(+)
+To https://github.com/erikafeghali-stack/the-giddy-list.git
+   10311b3..5f76d4a  main -> main
+✅ Deployed! Site will update in ~1-2 minutes.
+
+📝 Changes detected, waiting 10 seconds for you to finish editing...
+🔄 Deploying changes...
