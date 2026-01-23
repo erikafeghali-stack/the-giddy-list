@@ -1,0 +1,63 @@
+import type { Metadata } from "next";
+import { Inter, Rokkitt, Rye, Alfa_Slab_One, Lobster, Fraunces } from "next/font/google";
+import "./globals.css";
+import GlobalNav from "@/components/GlobalNav";
+import MobileNav from "@/components/MobileNav";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const rokkitt = Rokkitt({
+  variable: "--font-rokkitt",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const rye = Rye({
+  variable: "--font-rye",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const alfaSlabOne = Alfa_Slab_One({
+  variable: "--font-alfa",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const lobster = Lobster({
+  variable: "--font-lobster",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["800", "900"],
+});
+
+export const metadata: Metadata = {
+  title: "The Giddy List",
+  description: "Keep track of wishlists and gift registries for your little ones",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${inter.variable} ${rokkitt.variable} ${rye.variable} ${alfaSlabOne.variable} ${lobster.variable} ${fraunces.variable} antialiased bg-cream`}
+      >
+        <GlobalNav />
+        {children}
+        <MobileNav />
+      </body>
+    </html>
+  );
+}
