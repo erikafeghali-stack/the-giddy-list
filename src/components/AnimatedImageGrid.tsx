@@ -24,9 +24,9 @@ const HERO_IMAGE_SETS = [
   ],
   // Row 1, Column 3 (TOP RIGHT - fixed)
   [
-    "https://images.unsplash.com/photo-1513807016779-d51c0c026263?w=800&h=900&fit=crop", // Birthday candles
+    "https://images.unsplash.com/photo-1520483601560-389dff434fdf?w=800&h=900&fit=crop", // Kid opening gift excited
     "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&h=900&fit=crop", // Colorful balloons
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=900&fit=crop", // Kids party hats
+    "https://images.unsplash.com/photo-1513807016779-d51c0c026263?w=800&h=900&fit=crop", // Birthday candles
   ],
   // Row 2, Column 1
   [
