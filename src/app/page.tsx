@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
-import { Collection, CreatorProfile, TrendingGift, AgeRange } from "@/lib/types";
+import { Collection, CreatorProfile, TrendingGift, AgeRange, PublicGuideProfile, GuideTier } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import ProductImage from "@/components/ProductImage";
 import AnimatedImageGrid from "@/components/AnimatedImageGrid";
@@ -73,6 +73,74 @@ const SAMPLE_CREATORS = [
   { id: "8", username: "ashleyt", display_name: "Ashley Taylor", total_followers: 13600, avatar_url: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face" },
 ];
 
+// Sample featured Giddy Guides for when database is empty
+const SAMPLE_GUIDES: (PublicGuideProfile & { collections_count?: number })[] = [
+  {
+    id: "1",
+    username: "momofthree",
+    display_name: "Sarah Mitchell",
+    avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face",
+    cover_image_url: null,
+    guide_bio: "Mom of 3. Sharing the toys and gear that actually last.",
+    guide_tier: "influencer" as GuideTier,
+    social_instagram: "sarahmitchell",
+    social_tiktok: null,
+    social_youtube: null,
+    social_pinterest: null,
+    is_featured: true,
+    created_at: new Date().toISOString(),
+    collections_count: 12,
+  },
+  {
+    id: "2",
+    username: "playtimecurator",
+    display_name: "Jessica Kim",
+    avatar_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+    cover_image_url: null,
+    guide_bio: "Preschool teacher turned gift expert. Kid-tested, parent-approved.",
+    guide_tier: "curator" as GuideTier,
+    social_instagram: "playtimecurator",
+    social_tiktok: "playtimecurator",
+    social_youtube: null,
+    social_pinterest: null,
+    is_featured: true,
+    created_at: new Date().toISOString(),
+    collections_count: 8,
+  },
+  {
+    id: "3",
+    username: "stemqueen",
+    display_name: "Emily Roberts",
+    avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face",
+    cover_image_url: null,
+    guide_bio: "Engineer mom on a mission to make STEM fun for every kid.",
+    guide_tier: "curator" as GuideTier,
+    social_instagram: "stemqueen",
+    social_tiktok: null,
+    social_youtube: "STEMQueenKids",
+    social_pinterest: null,
+    is_featured: true,
+    created_at: new Date().toISOString(),
+    collections_count: 15,
+  },
+  {
+    id: "4",
+    username: "outdoorfamily",
+    display_name: "Amanda Johnson",
+    avatar_url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop&crop=face",
+    cover_image_url: null,
+    guide_bio: "Adventure-loving family sharing outdoor gear for every age.",
+    guide_tier: "standard" as GuideTier,
+    social_instagram: "outdoorfamily",
+    social_tiktok: null,
+    social_youtube: null,
+    social_pinterest: "outdoorfamily",
+    is_featured: true,
+    created_at: new Date().toISOString(),
+    collections_count: 6,
+  },
+];
+
 // FAQ data
 const FAQ_ITEMS = [
   {
@@ -136,6 +204,7 @@ function FAQAccordion({ items }: { items: typeof FAQ_ITEMS }) {
 export default function Home() {
   const [featuredCollections, setFeaturedCollections] = useState<CollectionWithCreator[]>([]);
   const [featuredCreators, setFeaturedCreators] = useState<CreatorProfile[]>([]);
+  const [featuredGuides, setFeaturedGuides] = useState<(PublicGuideProfile & { collections_count?: number })[]>([]);
   const [trendingGifts, setTrendingGifts] = useState<Record<AgeRange, TrendingGift[]>>({
     '0-2': [], '3-5': [], '6-8': [], '9-12': [], '13-18': [],
   });
@@ -156,6 +225,30 @@ export default function Home() {
         .eq("is_public", true)
         .order("total_followers", { ascending: false })
         .limit(12);
+
+      // Fetch featured Giddy Guides
+      const { data: guidesData } = await supabase
+        .from("creator_profiles")
+        .select("id, username, display_name, avatar_url, cover_image_url, guide_bio, guide_tier, social_instagram, social_tiktok, social_youtube, social_pinterest, is_featured, created_at")
+        .eq("guide_enabled", true)
+        .eq("is_featured", true)
+        .eq("is_public", true)
+        .limit(4);
+
+      if (guidesData && guidesData.length > 0) {
+        // Get collection counts for each guide
+        const guidesWithCounts = await Promise.all(
+          guidesData.map(async (guide) => {
+            const { count } = await supabase
+              .from("collections")
+              .select("*", { count: "exact", head: true })
+              .eq("user_id", guide.id)
+              .eq("is_public", true);
+            return { ...guide, collections_count: count || 0 } as PublicGuideProfile & { collections_count?: number };
+          })
+        );
+        setFeaturedGuides(guidesWithCounts);
+      }
 
       const ageRanges: AgeRange[] = ['0-2', '3-5', '6-8', '9-12', '13-18'];
       const giftsData: Record<AgeRange, TrendingGift[]> = {
@@ -322,6 +415,129 @@ export default function Home() {
               className="inline-block rounded-full bg-white px-12 py-5 text-lg font-semibold text-red hover:bg-gray-50 transition-all duration-200 hover:scale-[1.02] shadow-lg"
             >
               Start Your List Free
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FEATURED GIDDY GUIDES ===== */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <p className="text-red font-medium text-sm uppercase tracking-widest mb-4">Earn While You Share</p>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
+                Giddy Guides
+              </h2>
+              <p className="mt-5 text-lg md:text-xl text-foreground/40 max-w-lg">
+                Moms and creators earning by sharing what kids love
+              </p>
+            </div>
+            <Link
+              href="/dashboard/become-guide"
+              className="hidden md:inline-flex items-center gap-3 rounded-full bg-red px-8 py-4 font-medium text-white hover:bg-red-hover transition-all duration-200 shadow-lg"
+            >
+              Become a Guide
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {(featuredGuides.length > 0 ? featuredGuides : SAMPLE_GUIDES).map((guide) => {
+              const tierBadge = guide.guide_tier === "influencer"
+                ? { label: "Influencer", color: "bg-purple-100 text-purple-700" }
+                : guide.guide_tier === "curator"
+                ? { label: "Curator", color: "bg-blue-100 text-blue-700" }
+                : guide.guide_tier === "celebrity"
+                ? { label: "Celebrity", color: "bg-gold-light text-gold" }
+                : null;
+
+              return (
+                <Link
+                  key={guide.id}
+                  href={featuredGuides.length > 0 ? `/guide/${guide.username}` : "/dashboard/become-guide"}
+                  className="group rounded-3xl bg-gray-50 p-6 hover:bg-white hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="relative flex-shrink-0">
+                      <Avatar
+                        src={guide.avatar_url}
+                        name={guide.display_name || guide.username}
+                        size="xl"
+                        className="w-16 h-16 ring-2 ring-white shadow-md"
+                      />
+                      {guide.is_featured && (
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gold flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-foreground truncate group-hover:text-red transition-colors">
+                          {guide.display_name || guide.username}
+                        </h3>
+                        {tierBadge && (
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${tierBadge.color}`}>
+                            {tierBadge.label}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-foreground/40">@{guide.username}</p>
+                    </div>
+                  </div>
+
+                  {guide.guide_bio && (
+                    <p className="text-sm text-foreground/60 line-clamp-2 mb-4">
+                      {guide.guide_bio}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-foreground/40">
+                      {guide.collections_count || 0} collections
+                    </span>
+                    <span className="text-red font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                      Shop picks
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* CTA for becoming a guide */}
+          <div className="mt-12 rounded-3xl bg-gradient-to-r from-red-light to-gold-light border border-red/10 p-8 md:p-12 text-center">
+            <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+              Share what you love. Get paid.
+            </h3>
+            <p className="mt-4 text-foreground/60 max-w-lg mx-auto">
+              Become a Giddy Guide and earn commission when families shop your curated gift lists. No follower minimum required.
+            </p>
+            <Link
+              href="/dashboard/become-guide"
+              className="mt-8 inline-block rounded-full bg-red px-10 py-4 text-lg font-semibold text-white hover:bg-red-hover transition-all duration-200 shadow-lg shadow-red/20"
+            >
+              Start Earning Today
+            </Link>
+          </div>
+
+          <div className="mt-8 text-center md:hidden">
+            <Link
+              href="/dashboard/become-guide"
+              className="inline-flex items-center gap-3 rounded-full bg-red px-10 py-5 font-medium text-white hover:bg-red-hover transition-all"
+            >
+              Become a Guide
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
         </div>

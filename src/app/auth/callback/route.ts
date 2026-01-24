@@ -5,7 +5,10 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
 
+  console.log("Auth callback hit, code:", code ? "present" : "missing");
+
   if (!code) {
+    console.log("No code, redirecting to login");
     return NextResponse.redirect(new URL("/login", url.origin));
   }
 
@@ -15,8 +18,11 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
+  console.log("Exchange result - error:", error?.message, "session:", data?.session ? "present" : "missing");
+
   if (error || !data.session) {
-    return NextResponse.redirect(new URL("/login", url.origin));
+    console.log("Auth error, redirecting to login");
+    return NextResponse.redirect(new URL("/login?error=auth_failed", url.origin));
   }
 
   // Create response with redirect
@@ -42,6 +48,8 @@ export async function GET(request: Request) {
     maxAge: maxAge,
     path: "/",
   });
+
+  console.log("Cookies set, redirecting to /my-kids");
 
   return response;
 }

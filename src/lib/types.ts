@@ -352,3 +352,144 @@ export interface TrendingGiftSearch {
   category?: CollectionCategory;
   limit?: number;
 }
+
+// ============================================
+// Giddy Guide (Earnings System) Types
+// ============================================
+
+export type GuideTier = 'standard' | 'curator' | 'influencer' | 'celebrity';
+
+export type TransactionStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled';
+
+export type SourceType = 'wishlist' | 'gift_guide' | 'collection' | 'registry';
+
+export type PayoutStatus = 'pending' | 'processing' | 'completed' | 'failed';
+
+// Extended creator profile with Giddy Guide fields
+export interface GiddyGuideProfile extends CreatorProfile {
+  guide_enabled: boolean;
+  guide_tier: GuideTier;
+  payout_email: string | null;
+  earnings_balance: number;
+  total_earnings: number;
+  pending_earnings: number;
+  guide_bio: string | null;
+  social_instagram: string | null;
+  social_tiktok: string | null;
+  social_youtube: string | null;
+  social_pinterest: string | null;
+  is_featured: boolean;
+}
+
+// Public view of a Giddy Guide
+export interface PublicGuideProfile {
+  id: string;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  cover_image_url: string | null;
+  guide_bio: string | null;
+  guide_tier: GuideTier;
+  social_instagram: string | null;
+  social_tiktok: string | null;
+  social_youtube: string | null;
+  social_pinterest: string | null;
+  is_featured: boolean;
+  created_at: string;
+}
+
+// Earnings transaction
+export interface EarningsTransaction {
+  id: string;
+  guide_id: string;
+  source_type: SourceType;
+  source_id: string | null;
+  product_url: string;
+  product_title: string | null;
+  product_price: number | null;
+  commission_total: number;
+  guide_share: number;
+  platform_share: number;
+  status: TransactionStatus;
+  click_id: string | null;
+  confirmed_at: string | null;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Affiliate click tracking
+export interface AffiliateClick {
+  id: string;
+  guide_id: string | null;
+  visitor_id: string | null;
+  source_type: SourceType;
+  source_id: string | null;
+  product_url: string;
+  product_title: string | null;
+  product_price: number | null;
+  affiliate_url: string | null;
+  retailer: string | null;
+  ip_hash: string | null;
+  user_agent: string | null;
+  referer: string | null;
+  converted: boolean;
+  conversion_value: number | null;
+  created_at: string;
+}
+
+// Payout request
+export interface PayoutRequest {
+  id: string;
+  guide_id: string;
+  amount: number;
+  payout_email: string;
+  status: PayoutStatus;
+  processed_at: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+// Earnings summary for dashboard
+export interface EarningsSummary {
+  total_earnings: number;
+  pending_earnings: number;
+  available_balance: number;
+  total_clicks: number;
+  total_conversions: number;
+  conversion_rate: number;
+  this_month_earnings: number;
+  last_month_earnings: number;
+}
+
+// Commission split result
+export interface CommissionSplit {
+  guide_share: number;
+  platform_share: number;
+  guide_percentage: number;
+  platform_percentage: number;
+}
+
+// Form types
+export interface BecomeGuideInput {
+  payout_email: string;
+  guide_bio?: string;
+  social_instagram?: string;
+  social_tiktok?: string;
+  social_youtube?: string;
+  social_pinterest?: string;
+}
+
+export interface RequestPayoutInput {
+  amount: number;
+  payout_email: string;
+}
+
+export interface UpdateGuideProfileInput {
+  guide_bio?: string;
+  payout_email?: string;
+  social_instagram?: string;
+  social_tiktok?: string;
+  social_youtube?: string;
+  social_pinterest?: string;
+}

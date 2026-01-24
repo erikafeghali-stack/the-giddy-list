@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     // Get user's kids
     const { data: kids, error: kidsError } = await supabase
       .from("kids")
-      .select("id, name, birthday, avatar_url")
+      .select("id, name, birthdate, avatar_url")
       .eq("user_id", user.id)
       .order("created_at", { ascending: true });
 

@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     // Check if this URL already exists in the kid's wishlist
     const { data: existingItem } = await supabase
-      .from("wishlist_items")
+      .from("wishlists")
       .select("id")
       .eq("kid_id", kidId)
       .eq("url", url)
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     // Add item to wishlist
     const { data: newItem, error: insertError } = await supabase
-      .from("wishlist_items")
+      .from("wishlists")
       .insert({
         kid_id: kidId,
         user_id: user.id,
@@ -126,10 +126,12 @@ export async function POST(request: NextRequest) {
         image_url: image || null,
         price: parsedPrice,
         url: url,
-        source: source,
-        status: "wanted",
-        priority: "medium",
-        added_via: "extension",
+        original_url: url,
+        retailer: source,
+        status: "available",
+        priority: 0,
+        quantity: 1,
+        quantity_claimed: 0,
       })
       .select()
       .single();
