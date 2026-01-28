@@ -69,7 +69,7 @@ async function getGuideData(slug: string): Promise<{
   const { data: relatedGuides } = await relatedQuery.order("view_count", { ascending: false });
 
   // Increment view count asynchronously
-  supabase.rpc("increment_guide_view_count", { guide_slug: slug }).catch(() => {});
+  supabase.rpc("increment_guide_view_count", { guide_slug: slug }).then(() => {});
 
   return {
     guide: guide as GiftGuide,

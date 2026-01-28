@@ -210,7 +210,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
 
     for (const field of allowedFields) {
       if (field in body) {
-        updateData[field] = (body as Record<string, unknown>)[field];
+        updateData[field] = (body as unknown as Record<string, unknown>)[field];
       }
     }
 

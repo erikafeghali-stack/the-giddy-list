@@ -8,7 +8,7 @@ import { Collection, CreatorProfile, AgeRange, CollectionCategory } from "@/lib/
 import Avatar from "@/components/Avatar";
 
 interface GuideWithCreator extends Collection {
-  creator_profiles: CreatorProfile;
+  creator_profiles: CreatorProfile & { guide_enabled?: boolean };
 }
 
 const AGE_RANGES: { value: AgeRange | "all"; label: string }[] = [
