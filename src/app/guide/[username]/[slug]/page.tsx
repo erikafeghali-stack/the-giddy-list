@@ -1,66 +1,78 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Collection, CollectionItem, CreatorProfile } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 
-interface CollectionData extends Collection {
+interface GuideData extends Collection {
   items: CollectionItem[];
   creator_profiles: CreatorProfile;
 }
 
-export default function CollectionPage({
+export default function GuidePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ username: string; slug: string }>;
 }) {
-  const { slug } = use(params);
-  const router = useRouter();
+  const { username, slug } = use(params);
   const [loading, setLoading] = useState(true);
-  const [collection, setCollection] = useState<CollectionData | null>(null);
+  const [guide, setGuide] = useState<GuideData | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    async function loadCollection() {
+    async function loadGuide() {
       setLoading(true);
       setError(null);
 
       const { data: sessionData } = await supabase.auth.getSession();
       const currentUserId = sessionData.session?.user?.id;
 
-      // Load collection with items and creator
+      // First verify the username matches a creator
+      const { data: profileData } = await supabase
+        .from("creator_profiles")
+        .select("id, username")
+        .eq("username", username)
+        .single();
+
+      if (!profileData) {
+        setError("Creator not found");
+        setLoading(false);
+        return;
+      }
+
+      // Load guide with items and creator
       const { data, error: fetchError } = await supabase
         .from("collections")
         .select("*, collection_items(*), creator_profiles(*)")
         .eq("slug", slug)
+        .eq("user_id", profileData.id)
         .single();
 
       if (fetchError || !data) {
-        setError("Collection not found");
+        setError("Giddy Guide not found");
         setLoading(false);
         return;
       }
 
-      const c = data as CollectionData;
+      const g = data as GuideData;
 
       // Check if private and not owner
-      if (!c.is_public && c.user_id !== currentUserId) {
-        setError("This collection is private");
+      if (!g.is_public && g.user_id !== currentUserId) {
+        setError("This Giddy Guide is private");
         setLoading(false);
         return;
       }
 
-      setCollection(c);
-      setIsOwner(c.user_id === currentUserId);
+      setGuide(g);
+      setIsOwner(g.user_id === currentUserId);
 
       // Increment view count
-      if (c.user_id !== currentUserId) {
+      if (g.user_id !== currentUserId) {
         await supabase.rpc("increment_collection_views", {
           collection_slug: slug,
         });
@@ -69,8 +81,8 @@ export default function CollectionPage({
       setLoading(false);
     }
 
-    loadCollection();
-  }, [slug]);
+    loadGuide();
+  }, [username, slug]);
 
   async function copyShareLink() {
     const url = window.location.href;
@@ -81,7 +93,7 @@ export default function CollectionPage({
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#FAFAF8] pb-20 md:pb-0">
+      <main className="min-h-screen bg-white pb-20 md:pb-0">
         <div className="mx-auto max-w-5xl px-6 py-16 text-center">
           <div className="inline-block w-8 h-8 border-2 border-red/20 border-t-red rounded-full animate-spin" />
           <p className="mt-3 text-sm text-foreground/50">Loading guide...</p>
@@ -90,12 +102,12 @@ export default function CollectionPage({
     );
   }
 
-  if (error || !collection) {
+  if (error || !guide) {
     return (
-      <main className="min-h-screen bg-[#FAFAF8] pb-20 md:pb-0">
+      <main className="min-h-screen bg-white pb-20 md:pb-0">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <div className="rounded-2xl bg-white p-12 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+          <div className="rounded-3xl bg-gray-50 p-12 text-center">
+            <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <svg className="w-8 h-8 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -119,13 +131,13 @@ export default function CollectionPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-20 md:pb-0">
-      {/* Cover Image - Taller, more impactful like registry */}
-      {collection.cover_image_url && (
+    <main className="min-h-screen bg-white pb-20 md:pb-0">
+      {/* Cover Image */}
+      {guide.cover_image_url && (
         <div className="relative h-56 md:h-80 bg-gray-100">
           <Image
-            src={collection.cover_image_url}
-            alt={collection.title}
+            src={guide.cover_image_url}
+            alt={guide.title}
             fill
             className="object-cover"
             unoptimized
@@ -135,24 +147,24 @@ export default function CollectionPage({
           {/* Overlay content */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <div className="mx-auto max-w-5xl">
-              <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">
-                {collection.title}
+              <h1 className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight drop-shadow-md">
+                {guide.title}
               </h1>
               <Link
-                href={`/${collection.creator_profiles?.username}`}
+                href={`/guide/${guide.creator_profiles?.username}`}
                 className="mt-3 inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
               >
                 <Avatar
-                  src={collection.creator_profiles?.avatar_url}
-                  name={collection.creator_profiles?.display_name}
+                  src={guide.creator_profiles?.avatar_url}
+                  name={guide.creator_profiles?.display_name}
                   size="sm"
                   className="ring-2 ring-white/30"
                 />
                 <span className="text-sm text-white/90">
                   by{" "}
                   <span className="font-medium text-white">
-                    {collection.creator_profiles?.display_name ||
-                      collection.creator_profiles?.username}
+                    {guide.creator_profiles?.display_name ||
+                      guide.creator_profiles?.username}
                   </span>
                 </span>
               </Link>
@@ -163,54 +175,54 @@ export default function CollectionPage({
 
       <div className="mx-auto max-w-5xl px-6 py-6">
         {/* Header - Only show if no cover image */}
-        {!collection.cover_image_url && (
+        {!guide.cover_image_url && (
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">
-              {collection.title}
+            <h1 className="text-3xl font-display font-bold text-foreground tracking-tight">
+              {guide.title}
             </h1>
             <Link
-              href={`/${collection.creator_profiles?.username}`}
+              href={`/guide/${guide.creator_profiles?.username}`}
               className="mt-3 inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <Avatar
-                src={collection.creator_profiles?.avatar_url}
-                name={collection.creator_profiles?.display_name}
+                src={guide.creator_profiles?.avatar_url}
+                name={guide.creator_profiles?.display_name}
                 size="sm"
               />
               <span className="text-sm text-foreground/70">
                 by{" "}
                 <span className="font-medium text-foreground">
-                  {collection.creator_profiles?.display_name ||
-                    collection.creator_profiles?.username}
+                  {guide.creator_profiles?.display_name ||
+                    guide.creator_profiles?.username}
                 </span>
               </span>
             </Link>
           </div>
         )}
 
-        {/* Action Bar - Clean, minimal */}
+        {/* Action Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex-1">
-            {collection.description && (
+            {guide.description && (
               <p className="text-foreground/60 max-w-xl text-sm">
-                {collection.description}
+                {guide.description}
               </p>
             )}
 
             {/* Tags */}
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              {collection.age_range && (
-                <span className="rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-foreground/70">
-                  Ages {collection.age_range}
+              {guide.age_range && (
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-foreground/70">
+                  Ages {guide.age_range}
                 </span>
               )}
-              {collection.category && (
-                <span className="rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-foreground/70 capitalize">
-                  {collection.category.replace("-", " ")}
+              {guide.category && (
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-foreground/70 capitalize">
+                  {guide.category.replace("-", " ")}
                 </span>
               )}
               <span className="text-xs text-foreground/40">
-                {collection.view_count.toLocaleString()} views
+                {guide.view_count.toLocaleString()} views
               </span>
             </div>
           </div>
@@ -227,7 +239,7 @@ export default function CollectionPage({
             </button>
             {isOwner && (
               <Link
-                href={`/collections/${collection.slug}/edit`}
+                href={`/collections/${guide.slug}/edit`}
                 className="rounded-full bg-white px-5 py-2.5 text-sm font-medium shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow transition-all"
               >
                 Edit
@@ -238,9 +250,9 @@ export default function CollectionPage({
 
         {/* Items Grid */}
         <div>
-          {collection.items.length === 0 ? (
-            <div className="rounded-2xl bg-white p-12 text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+          {guide.items.length === 0 ? (
+            <div className="rounded-3xl bg-gray-50 p-12 text-center">
+              <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                 <svg className="w-8 h-8 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -250,12 +262,12 @@ export default function CollectionPage({
               </div>
               <p className="mt-2 text-foreground/50">
                 {isOwner
-                  ? "Add items to your collection to share with others!"
-                  : "This collection doesn't have any items yet."}
+                  ? "Add items to your Giddy Guide to share with others!"
+                  : "This guide doesn't have any items yet."}
               </p>
               {isOwner && (
                 <Link
-                  href={`/collections/${collection.slug}/edit`}
+                  href={`/collections/${guide.slug}/edit`}
                   className="mt-5 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
                 >
                   Add Items
@@ -264,7 +276,7 @@ export default function CollectionPage({
             </div>
           ) : (
             <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {collection.items
+              {guide.items
                 .sort((a, b) => a.display_order - b.display_order)
                 .map((item) => (
                   <a
@@ -274,7 +286,7 @@ export default function CollectionPage({
                     rel="noreferrer"
                     className="group block"
                   >
-                    {/* Image - Taller aspect ratio like ShopMy */}
+                    {/* Image */}
                     <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100">
                       {item.product_image_url ? (
                         <Image

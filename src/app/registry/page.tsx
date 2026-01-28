@@ -80,24 +80,24 @@ export default function RegistriesPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                My Registries
+                My Giddy Shortlists
               </h1>
               <p className="mt-1 text-foreground/50">
-                Shareable gift registries for birthdays, holidays, and special occasions
+                Shareable shortlists for birthdays, holidays, and special occasions
               </p>
             </div>
             <Link
               href="/registry/new"
               className="rounded-full bg-red px-5 py-2.5 text-sm font-medium text-white hover:bg-red-hover transition-colors"
             >
-              New Registry
+              New Shortlist
             </Link>
           </div>
 
           {/* Section Navigation - Tabs */}
           <div className="flex items-center gap-1 mt-6 border-b border-gray-200">
             <Link
-              href="/my-kids"
+              href="/dashboard"
               className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/60 hover:text-foreground transition-colors"
             >
               My Kids
@@ -106,13 +106,13 @@ export default function RegistriesPage() {
               href="/collections"
               className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/60 hover:text-foreground transition-colors"
             >
-              Collections
+              Giddy Guides
             </Link>
             <Link
               href="/registry"
               className="px-4 py-3 text-sm font-medium border-b-2 border-red text-red"
             >
-              Registries
+              Giddy Shortlists
             </Link>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function RegistriesPage() {
         {loading ? (
           <div className="py-16 text-center">
             <div className="inline-block w-8 h-8 border-2 border-red/20 border-t-red rounded-full animate-spin" />
-            <p className="mt-3 text-sm text-foreground/50">Loading registries...</p>
+            <p className="mt-3 text-sm text-foreground/50">Loading shortlists...</p>
           </div>
         ) : registries.length === 0 ? (
           <div className="rounded-2xl bg-white p-12 text-center">
@@ -137,15 +137,15 @@ export default function RegistriesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
               </svg>
             </div>
-            <div className="text-xl font-semibold text-foreground">No registries yet</div>
+            <div className="text-xl font-semibold text-foreground">No shortlists yet</div>
             <p className="mt-2 text-foreground/50">
-              Create your first registry to share with family and friends
+              Create your first Giddy Shortlist to share with family and friends
             </p>
             <Link
               href="/registry/new"
               className="mt-5 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
             >
-              Create Registry
+              Create Shortlist
             </Link>
           </div>
         ) : (

@@ -264,7 +264,7 @@ export default function GlobalNav() {
                   <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
                   <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
-                  <DropdownItem href="/discover/guides" onClick={closeAllDropdowns}>Gift Guides</DropdownItem>
+                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
                   <DropdownItem href="/discover/trending" onClick={closeAllDropdowns}>Trending Lists</DropdownItem>
                 </NavDropdown>
 
@@ -279,8 +279,8 @@ export default function GlobalNav() {
                   }}
                   dropdownRef={myKidsRef}
                 >
-                  <DropdownItem href="/my-kids" onClick={closeAllDropdowns}>View All Kids</DropdownItem>
-                  <DropdownItem href="/my-kids?add=true" onClick={closeAllDropdowns}>Add a Kid</DropdownItem>
+                  <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>View All Kids</DropdownItem>
+                  <DropdownItem href="/dashboard?add=true" onClick={closeAllDropdowns}>Add a Kid</DropdownItem>
                 </NavDropdown>
 
                 {/* MY LISTS Dropdown */}
@@ -294,9 +294,9 @@ export default function GlobalNav() {
                   }}
                   dropdownRef={myListsRef}
                 >
-                  <DropdownItem href="/my-kids" onClick={closeAllDropdowns}>Wishlists</DropdownItem>
-                  <DropdownItem href="/registry" onClick={closeAllDropdowns}>Registries</DropdownItem>
-                  <DropdownItem href="/collections" onClick={closeAllDropdowns}>Collections</DropdownItem>
+                  <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>Giddy Lists</DropdownItem>
+                  <DropdownItem href="/registry" onClick={closeAllDropdowns}>Giddy Shortlists</DropdownItem>
+                  <DropdownItem href="/collections" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
                 </NavDropdown>
               </>
             ) : (
@@ -318,7 +318,7 @@ export default function GlobalNav() {
                   <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
                   <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
-                  <DropdownItem href="/discover/guides" onClick={closeAllDropdowns}>Gift Guides</DropdownItem>
+                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
                   <DropdownItem href="/discover/trending" onClick={closeAllDropdowns}>Trending Lists</DropdownItem>
                 </NavDropdown>
 
@@ -333,8 +333,8 @@ export default function GlobalNav() {
                   dropdownRef={forParentsRef}
                 >
                   <DropdownItem href="/#how-it-works" onClick={closeAllDropdowns}>How It Works</DropdownItem>
-                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Wishlist</DropdownItem>
-                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Registry</DropdownItem>
+                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Giddy List</DropdownItem>
+                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Giddy Shortlist</DropdownItem>
                   <DropdownDivider />
                   <DropdownItem href="/dashboard/become-guide" onClick={closeAllDropdowns}>
                     <span className="flex items-center gap-2">

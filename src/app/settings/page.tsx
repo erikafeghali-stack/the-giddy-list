@@ -150,7 +150,7 @@ export default function SettingsPage() {
           </Link>
 
           <Link
-            href="/my-kids"
+            href="/dashboard"
             className="block rounded-2xl bg-card border border-border p-4 shadow-sm hover:bg-cream-dark/50 transition-colors"
           >
             <div className="flex items-center gap-3">
@@ -172,7 +172,7 @@ export default function SettingsPage() {
               <div className="flex-1">
                 <div className="font-medium text-foreground">My Kids</div>
                 <div className="text-sm text-foreground/60">
-                  Manage kids, sizes, preferences, and wishlists
+                  Manage kids, sizes, preferences, and Giddy Lists
                 </div>
               </div>
               <svg
@@ -212,9 +212,9 @@ export default function SettingsPage() {
                 </svg>
               </div>
               <div className="flex-1">
-                <div className="font-medium text-foreground">Registries</div>
+                <div className="font-medium text-foreground">Giddy Shortlists</div>
                 <div className="text-sm text-foreground/60">
-                  Manage your gift registries
+                  Manage your gift shortlists for events
                 </div>
               </div>
               <svg
@@ -254,9 +254,9 @@ export default function SettingsPage() {
                 </svg>
               </div>
               <div className="flex-1">
-                <div className="font-medium text-foreground">Collections</div>
+                <div className="font-medium text-foreground">Giddy Guides</div>
                 <div className="text-sm text-foreground/60">
-                  Create and manage gift guides
+                  Create and manage curated gift guides
                 </div>
               </div>
               <svg

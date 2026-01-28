@@ -277,16 +277,16 @@ export default function PublicProfilePage({
               <span className="font-semibold text-foreground">
                 {profile.collections.length}
               </span>
-              <span className="text-foreground/60 ml-1">collections</span>
+              <span className="text-foreground/60 ml-1">guides</span>
             </div>
           </div>
         </div>
 
-        {/* Collections Section */}
+        {/* Giddy Guides Section */}
         {profile.collections.length > 0 && (
           <section className="mt-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-foreground">Collections</h2>
+              <h2 className="text-lg font-bold text-foreground">Giddy Guides</h2>
               <Link
                 href={`/${username}/collections`}
                 className="text-sm text-red hover:text-red-hover transition-colors"
@@ -298,7 +298,7 @@ export default function PublicProfilePage({
               {profile.collections.map((collection) => (
                 <Link
                   key={collection.id}
-                  href={`/collections/${collection.slug}`}
+                  href={`/guide/${username}/${collection.slug}`}
                   className="group rounded-2xl bg-card border border-border overflow-hidden shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="relative aspect-[4/3] bg-cream-dark">
@@ -328,17 +328,17 @@ export default function PublicProfilePage({
           </section>
         )}
 
-        {/* Registries Section */}
+        {/* Giddy Shortlists Section */}
         {profile.registries.length > 0 && (
           <section className="mt-10 pb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-foreground">Registries</h2>
+              <h2 className="text-lg font-bold text-foreground">Giddy Shortlists</h2>
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {profile.registries.map((registry) => (
                 <Link
                   key={registry.id}
-                  href={`/registry/${registry.slug}`}
+                  href={`/shortlist/${registry.slug}`}
                   className="group rounded-2xl bg-card border border-border p-4 shadow-sm hover:shadow-md transition-all"
                 >
                   <h3 className="font-medium text-foreground group-hover:text-red transition-colors">
@@ -368,7 +368,7 @@ export default function PublicProfilePage({
             </div>
             <p className="mt-2 text-sm text-foreground/60">
               {isOwnProfile
-                ? "Create your first collection or registry to share with others!"
+                ? "Create your first Giddy Guide or Shortlist to share with others!"
                 : "This creator hasn't shared any public content yet."}
             </p>
             {isOwnProfile && (
@@ -376,7 +376,7 @@ export default function PublicProfilePage({
                 href="/collections/new"
                 className="mt-4 inline-block rounded-xl bg-red px-5 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
               >
-                Create Collection
+                Create Giddy Guide
               </Link>
             )}
           </div>

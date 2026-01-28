@@ -8,7 +8,7 @@ import Link from "next/link";
 import ProductGrid from "@/components/ProductGrid";
 import ThankYouNoteModal from "@/components/ThankYouNoteModal";
 
-interface RegistryData {
+interface ShortlistData {
   id: string;
   name: string;
   slug: string;
@@ -24,9 +24,9 @@ interface RegistryData {
   items: (WishlistItem & { display_order: number })[];
 }
 
-export default function RegistryClient({ slug }: { slug: string }) {
+export default function ShortlistClient({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true);
-  const [registry, setRegistry] = useState<RegistryData | null>(null);
+  const [shortlist, setShortlist] = useState<ShortlistData | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [claims, setClaims] = useState<GiftClaim[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -49,10 +49,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
   const [activeTab, setActiveTab] = useState<"all" | "available" | "reserved" | "purchased">("all");
 
   useEffect(() => {
-    loadRegistry();
+    loadShortlist();
   }, [slug]);
 
-  async function loadRegistry() {
+  async function loadShortlist() {
     setLoading(true);
     setError(null);
 
@@ -68,20 +68,21 @@ export default function RegistryClient({ slug }: { slug: string }) {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
+      // Use the same API endpoint as registry
       const res = await fetch(`/api/registry/${slug}`, { headers });
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Registry not found");
+        setError(data.error || "Shortlist not found");
         setLoading(false);
         return;
       }
 
-      setRegistry(data.registry);
+      setShortlist(data.registry);
       setIsOwner(data.isOwner);
       setClaims(data.claims || []);
     } catch (err) {
-      setError("Failed to load registry");
+      setError("Failed to load shortlist");
     }
 
     setLoading(false);
@@ -89,7 +90,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
 
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
-    if (!claimingItem || !registry) return;
+    if (!claimingItem || !shortlist) return;
 
     if (!claimName.trim()) {
       alert("Please enter your name");
@@ -126,8 +127,8 @@ export default function RegistryClient({ slug }: { slug: string }) {
       setClaimNote("");
       setClaimType("reserved");
 
-      // Reload registry to show updated status
-      await loadRegistry();
+      // Reload to show updated status
+      await loadShortlist();
     } catch (err) {
       alert("Failed to claim item");
     }
@@ -144,28 +145,29 @@ export default function RegistryClient({ slug }: { slug: string }) {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-cream pb-20 md:pb-0">
-        <div className="mx-auto max-w-5xl px-6 py-10">
-          <div className="text-sm text-foreground/50">Loading shortlist...</div>
+      <main className="min-h-screen bg-white pb-20 md:pb-0">
+        <div className="mx-auto max-w-5xl px-6 py-16 text-center">
+          <div className="inline-block w-8 h-8 border-2 border-red/20 border-t-red rounded-full animate-spin" />
+          <p className="mt-3 text-sm text-foreground/50">Loading shortlist...</p>
         </div>
       </main>
     );
   }
 
-  if (error || !registry) {
+  if (error || !shortlist) {
     return (
-      <main className="min-h-screen bg-cream pb-20 md:pb-0">
-        <div className="mx-auto max-w-5xl px-6 py-10">
-          <div className="rounded-2xl bg-card border border-border p-8 text-center shadow-sm">
-            <div className="text-lg font-semibold text-foreground">
-              {error || "Giddy Shortlist not found"}
+      <main className="min-h-screen bg-white pb-20 md:pb-0">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+          <div className="rounded-3xl bg-gray-50 p-12 text-center">
+            <div className="text-xl font-semibold text-foreground">
+              {error || "Shortlist not found"}
             </div>
-            <p className="mt-2 text-sm text-foreground/60">
-              This shortlist may be private or no longer exists.
+            <p className="mt-2 text-foreground/50">
+              This Giddy Shortlist may be private or no longer exists.
             </p>
             <Link
               href="/"
-              className="mt-4 inline-block rounded-xl bg-red px-5 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
+              className="mt-5 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
             >
               Go Home
             </Link>
@@ -175,16 +177,16 @@ export default function RegistryClient({ slug }: { slug: string }) {
     );
   }
 
-  const availableItems = registry.items.filter((i) => i.status === "available");
-  const reservedItems = registry.items.filter((i) => i.status === "reserved");
-  const purchasedItems = registry.items.filter((i) => i.status === "purchased");
-  const totalItems = registry.items.length;
+  const availableItems = shortlist.items.filter((i) => i.status === "available");
+  const reservedItems = shortlist.items.filter((i) => i.status === "reserved");
+  const purchasedItems = shortlist.items.filter((i) => i.status === "purchased");
+  const totalItems = shortlist.items.length;
   const claimedCount = reservedItems.length + purchasedItems.length;
   const progressPercent = totalItems > 0 ? (claimedCount / totalItems) * 100 : 0;
 
   // Filter items based on active tab
   const displayItems = activeTab === "all"
-    ? registry.items
+    ? shortlist.items
     : activeTab === "available"
     ? availableItems
     : activeTab === "reserved"
@@ -192,13 +194,13 @@ export default function RegistryClient({ slug }: { slug: string }) {
     : purchasedItems;
 
   return (
-    <main className="min-h-screen bg-gray-50/50 pb-20 md:pb-0">
-      {/* Cover Image - Taller, more impactful */}
-      {registry.cover_image_url && (
+    <main className="min-h-screen bg-white pb-20 md:pb-0">
+      {/* Cover Image */}
+      {shortlist.cover_image_url && (
         <div className="relative h-56 md:h-80 bg-gray-100">
           <Image
-            src={registry.cover_image_url}
-            alt={registry.name}
+            src={shortlist.cover_image_url}
+            alt={shortlist.name}
             fill
             className="object-cover"
             unoptimized
@@ -208,29 +210,29 @@ export default function RegistryClient({ slug }: { slug: string }) {
           {/* Overlay content */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <div className="mx-auto max-w-5xl">
-              <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">
-                {registry.name}
+              <h1 className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight drop-shadow-md">
+                {shortlist.name}
               </h1>
               <div className="mt-2 flex flex-wrap items-center gap-3 text-white/90">
-                {registry.kids && (
+                {shortlist.kids && (
                   <span className="flex items-center gap-1.5 text-sm">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
-                    For {registry.kids.name}
+                    For {shortlist.kids.name}
                   </span>
                 )}
-                {registry.occasion && (
+                {shortlist.occasion && (
                   <span className="rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-medium">
-                    {registry.occasion}
+                    {shortlist.occasion}
                   </span>
                 )}
-                {registry.event_date && (
+                {shortlist.event_date && (
                   <span className="flex items-center gap-1.5 text-sm">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    {new Date(registry.event_date).toLocaleDateString()}
+                    {new Date(shortlist.event_date).toLocaleDateString()}
                   </span>
                 )}
               </div>
@@ -254,43 +256,43 @@ export default function RegistryClient({ slug }: { slug: string }) {
         )}
 
         {/* Header - Only show if no cover image */}
-        {!registry.cover_image_url && (
+        {!shortlist.cover_image_url && (
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">
-              {registry.name}
+            <h1 className="text-3xl font-display font-bold text-foreground tracking-tight">
+              {shortlist.name}
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-foreground/60">
-              {registry.kids && (
+              {shortlist.kids && (
                 <span className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  For {registry.kids.name}
+                  For {shortlist.kids.name}
                 </span>
               )}
-              {registry.occasion && (
+              {shortlist.occasion && (
                 <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-foreground/70">
-                  {registry.occasion}
+                  {shortlist.occasion}
                 </span>
               )}
-              {registry.event_date && (
+              {shortlist.event_date && (
                 <span className="flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  {new Date(registry.event_date).toLocaleDateString()}
+                  {new Date(shortlist.event_date).toLocaleDateString()}
                 </span>
               )}
             </div>
           </div>
         )}
 
-        {/* Action Bar - Clean, minimal */}
+        {/* Action Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            {registry.description && (
+            {shortlist.description && (
               <p className="text-foreground/60 max-w-xl text-sm">
-                {registry.description}
+                {shortlist.description}
               </p>
             )}
           </div>
@@ -306,7 +308,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
             </button>
             {isOwner && (
               <Link
-                href={`/registry/${registry.slug}/edit`}
+                href={`/registry/${shortlist.slug}/edit`}
                 className="rounded-full bg-white px-5 py-2.5 text-sm font-medium shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow transition-all"
               >
                 Edit
@@ -315,9 +317,9 @@ export default function RegistryClient({ slug }: { slug: string }) {
           </div>
         </div>
 
-        {/* Progress Bar - Cleaner, more modern */}
+        {/* Progress Bar */}
         {totalItems > 0 && (
-          <div className="mb-8 rounded-2xl bg-white p-5 shadow-sm">
+          <div className="mb-8 rounded-2xl bg-gray-50 p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold text-foreground">
                 Gift Progress
@@ -326,7 +328,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
                 {claimedCount} of {totalItems} claimed
               </span>
             </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-red to-red-hover rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${progressPercent}%` }}
@@ -335,7 +337,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
           </div>
         )}
 
-        {/* Tabs - ShopMy style storefront navigation */}
+        {/* Tabs */}
         <div className="flex items-center gap-1 mb-6 border-b border-gray-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab("all")}
@@ -370,7 +372,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
             Reserved
             <span className="ml-1.5 text-xs text-foreground/40">{reservedItems.length}</span>
           </button>
-          {(registry.show_purchased || isOwner) && (
+          {(shortlist.show_purchased || isOwner) && (
             <button
               onClick={() => setActiveTab("purchased")}
               className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -390,10 +392,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
           <ProductGrid
             items={displayItems}
             claims={claims}
-            showPrices={registry.show_prices}
+            showPrices={shortlist.show_prices}
             isOwner={isOwner}
             onClaimItem={(item) => setClaimingItem(item)}
-            emptyMessage={activeTab === "all" ? "No items in this registry yet" : `No ${activeTab} items`}
+            emptyMessage={activeTab === "all" ? "No items in this shortlist yet" : `No ${activeTab} items`}
             columns={3}
             showSearch={totalItems > 6}
           />
@@ -401,21 +403,21 @@ export default function RegistryClient({ slug }: { slug: string }) {
 
         {/* Owner Claims View */}
         {isOwner && claims.length > 0 && (
-          <div className="mt-8 rounded-2xl bg-card border border-border p-5 shadow-sm">
+          <div className="mt-8 rounded-2xl bg-gray-50 p-5">
             <div className="text-sm font-semibold text-foreground mb-4">
               Who's Claiming What
             </div>
             <div className="space-y-3">
               {claims.map((claim) => {
-                const item = registry.items.find((i) => i.id === claim.wishlist_id);
+                const item = shortlist.items.find((i) => i.id === claim.wishlist_id);
                 return (
                   <div
                     key={claim.id}
-                    className="flex items-center justify-between rounded-xl bg-cream-dark/50 border border-border p-3 text-sm"
+                    className="flex items-center justify-between rounded-xl bg-white border border-gray-100 p-3 text-sm"
                   >
                     <div className="flex items-center gap-3">
                       {item?.image_url && (
-                        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-cream flex-shrink-0">
+                        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
                           <Image
                             src={item.image_url}
                             alt={item.title || "Product"}
@@ -468,10 +470,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
       {/* Claim Modal */}
       {claimingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-card p-6 shadow-lg">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
             <div className="flex items-start gap-4">
               {claimingItem.image_url && (
-                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-cream flex-shrink-0">
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
                   <Image
                     src={claimingItem.image_url}
                     alt={claimingItem.title || "Product"}
@@ -499,7 +501,7 @@ export default function RegistryClient({ slug }: { slug: string }) {
                   value={claimName}
                   onChange={(e) => setClaimName(e.target.value)}
                   placeholder="e.g., Grandma Sue"
-                  className="mt-1 w-full rounded-xl border border-border bg-card p-3 text-sm placeholder:text-foreground/40"
+                  className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm placeholder:text-foreground/40 focus:border-red/30 focus:ring-2 focus:ring-red/10"
                   required
                 />
               </div>
@@ -513,10 +515,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
                   value={claimEmail}
                   onChange={(e) => setClaimEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="mt-1 w-full rounded-xl border border-border bg-card p-3 text-sm placeholder:text-foreground/40"
+                  className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm placeholder:text-foreground/40 focus:border-red/30 focus:ring-2 focus:ring-red/10"
                 />
                 <p className="mt-1 text-xs text-foreground/50">
-                  We'll notify you if the registry owner sends a thank you note
+                  We'll notify you if they send a thank you note
                 </p>
               </div>
 
@@ -528,10 +530,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
                   <button
                     type="button"
                     onClick={() => setClaimType("reserved")}
-                    className={`flex-1 rounded-xl border p-3 text-sm transition-colors ${
+                    className={`flex-1 rounded-xl border px-4 py-3 text-sm transition-colors ${
                       claimType === "reserved"
                         ? "border-red bg-red-light text-red"
-                        : "border-border hover:bg-cream-dark"
+                        : "border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     Planning to buy
@@ -539,10 +541,10 @@ export default function RegistryClient({ slug }: { slug: string }) {
                   <button
                     type="button"
                     onClick={() => setClaimType("purchased")}
-                    className={`flex-1 rounded-xl border p-3 text-sm transition-colors ${
+                    className={`flex-1 rounded-xl border px-4 py-3 text-sm transition-colors ${
                       claimType === "purchased"
                         ? "border-red bg-red-light text-red"
-                        : "border-border hover:bg-cream-dark"
+                        : "border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     Already bought
@@ -557,9 +559,9 @@ export default function RegistryClient({ slug }: { slug: string }) {
                 <textarea
                   value={claimNote}
                   onChange={(e) => setClaimNote(e.target.value)}
-                  placeholder="Any message for the registry owner..."
+                  placeholder="Any message for them..."
                   rows={2}
-                  className="mt-1 w-full rounded-xl border border-border bg-card p-3 text-sm placeholder:text-foreground/40"
+                  className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm placeholder:text-foreground/40 focus:border-red/30 focus:ring-2 focus:ring-red/10"
                 />
               </div>
 
@@ -567,14 +569,14 @@ export default function RegistryClient({ slug }: { slug: string }) {
                 <button
                   type="button"
                   onClick={() => setClaimingItem(null)}
-                  className="flex-1 rounded-xl border border-border bg-card p-3 text-sm hover:bg-cream-dark transition-colors"
+                  className="flex-1 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
                   disabled={claiming}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-red p-3 text-sm font-medium text-white hover:bg-red-hover transition-colors disabled:opacity-50"
+                  className="flex-1 rounded-full bg-red px-4 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors disabled:opacity-50"
                   disabled={claiming || !claimName.trim()}
                 >
                   {claiming ? "Claiming..." : "Claim Item"}
@@ -586,14 +588,12 @@ export default function RegistryClient({ slug }: { slug: string }) {
       )}
 
       {/* Thank You Note Modal */}
-      {thankYouClaim && registry && (
+      {thankYouClaim && shortlist && (
         <ThankYouNoteModal
           claim={thankYouClaim}
-          item={registry.items.find((i) => i.id === thankYouClaim.wishlist_id)}
+          item={shortlist.items.find((i) => i.id === thankYouClaim.wishlist_id)}
           onClose={() => setThankYouClaim(null)}
-          onSent={() => {
-            // Could reload to update UI if needed
-          }}
+          onSent={() => {}}
         />
       )}
     </main>

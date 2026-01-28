@@ -8,14 +8,15 @@ import { Collection, CreatorProfile, TrendingGift, AgeRange, PublicGuideProfile,
 import Avatar from "@/components/Avatar";
 import ProductImage from "@/components/ProductImage";
 import AnimatedImageGrid from "@/components/AnimatedImageGrid";
+import { Gamepad2, Shirt, BookOpen, Baby, Bed, TreePine, Palette, Laptop } from "lucide-react";
 
 // Age categories configuration
-const AGE_CATEGORIES: { range: AgeRange; label: string; description: string }[] = [
-  { range: "0-2", label: "Baby & Toddler", description: "First toys, teethers & nursery" },
-  { range: "3-5", label: "Preschool", description: "Creative play & learning" },
-  { range: "6-8", label: "Early Elementary", description: "Building sets & books" },
-  { range: "9-12", label: "Tweens", description: "Tech & hobbies" },
-  { range: "13-18", label: "Teens", description: "Fashion & experiences" },
+const AGE_CATEGORIES: { range: AgeRange; label: string; description: string; image: string }[] = [
+  { range: "0-2", label: "Baby & Toddler", description: "First toys, teethers & nursery", image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop" },
+  { range: "3-5", label: "Preschool", description: "Creative play & learning", image: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=400&fit=crop" },
+  { range: "6-8", label: "Early Elementary", description: "Building sets & books", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=400&h=400&fit=crop" },
+  { range: "9-12", label: "Tweens", description: "Tech & hobbies", image: "https://images.unsplash.com/photo-1489710437720-ebb67ec84dd2?w=400&h=400&fit=crop" },
+  { range: "13-18", label: "Teens", description: "Fashion & experiences", image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&h=400&fit=crop" },
 ];
 
 // Sample collections for when database is empty
@@ -145,7 +146,7 @@ const SAMPLE_GUIDES: (PublicGuideProfile & { collections_count?: number })[] = [
 const FAQ_ITEMS = [
   {
     question: "How does The Giddy List work?",
-    answer: "Create a free account, add your kids with their ages and sizes, then build wishlists by pasting product URLs from any store. Share your unique link with family and friends — they can see exactly what your kids want and mark items as purchased."
+    answer: "Create a free account, add your kids with their ages and sizes, then build Giddy Lists by pasting product URLs from any store. Share your unique link with family and friends — they can see exactly what your kids want and mark items as purchased."
   },
   {
     question: "How do I earn money?",
@@ -157,7 +158,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "Is this different from a baby registry?",
-    answer: "The Giddy List works for kids of ALL ages (0-18), not just babies. It's a running wishlist that grows with your kids, plus you can create event-specific registries for birthdays, holidays, or any occasion."
+    answer: "The Giddy List works for kids of ALL ages (0-18), not just babies. It's a running Giddy List that grows with your kids, plus you can create event-specific Giddy Shortlists for birthdays, holidays, or any occasion."
   },
   {
     question: "How do gift givers use the list?",
@@ -337,12 +338,8 @@ export default function Home() {
       {/* ===== SOCIAL PROOF STRIP ===== */}
       <section className="border-y border-gray-100">
         <div className="mx-auto max-w-4xl px-8 py-6">
-          <p className="text-center text-foreground/50 text-sm md:text-base tracking-wide">
-            <span className="font-semibold text-foreground">10,000+ Parents</span>
-            <span className="mx-3 text-foreground/20">&bull;</span>
-            <span className="font-semibold text-foreground">50,000+ Gift Ideas</span>
-            <span className="mx-3 text-foreground/20">&bull;</span>
-            <span className="text-foreground/50">Curated Daily</span>
+          <p className="text-center text-foreground/60 text-sm md:text-base tracking-wide font-medium">
+            Join parents who get it
           </p>
         </div>
       </section>
@@ -355,6 +352,9 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground tracking-tight">
               Moms Who Get It
             </h2>
+            {featuredCreators.length === 0 && (
+              <p className="mt-4 text-sm text-foreground/40 italic">Featured Guides (Examples)</p>
+            )}
           </div>
 
           <div className="relative">
@@ -391,15 +391,15 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
           <div className="grid md:grid-cols-3 gap-16 md:gap-20">
             <div className="text-center md:text-left">
-              <h3 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight">Wishlists</h3>
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight">Giddy Lists</h3>
               <p className="mt-6 text-lg md:text-xl text-white/70 leading-relaxed">
                 Keep running lists of things your kids want. Update sizes anytime — grandma always sees the latest.
               </p>
             </div>
             <div className="text-center md:text-left">
-              <h3 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight">Registries</h3>
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight">Giddy Shortlists</h3>
               <p className="mt-6 text-lg md:text-xl text-white/70 leading-relaxed">
-                Create shareable registries for birthdays, holidays, graduations — any gift-giving occasion.
+                Create shareable shortlists for birthdays, holidays, graduations — any gift-giving occasion.
               </p>
             </div>
             <div className="text-center md:text-left">
@@ -432,6 +432,9 @@ export default function Home() {
               <p className="mt-5 text-lg md:text-xl text-foreground/40 max-w-lg">
                 Moms and creators earning by sharing what kids love
               </p>
+              {featuredGuides.length === 0 && (
+                <p className="mt-2 text-sm text-foreground/40 italic">Featured Guides (Examples)</p>
+              )}
             </div>
             <Link
               href="/dashboard/become-guide"
@@ -566,7 +569,7 @@ export default function Home() {
                   href={`/discover/age/${category.range}`}
                   className="group relative rounded-3xl bg-gray-50 p-6 md:p-8 hover:bg-white hover:shadow-xl transition-all duration-300"
                 >
-                  {hasGifts && (
+                  {hasGifts ? (
                     <div className="grid grid-cols-2 gap-2 mb-6">
                       {gifts.slice(0, 4).map((gift, i) => (
                         <div key={i} className="aspect-square rounded-2xl bg-white overflow-hidden relative shadow-sm">
@@ -578,9 +581,19 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
+                  ) : (
+                    <div className="aspect-square rounded-2xl bg-white overflow-hidden relative shadow-sm mb-6">
+                      <Image
+                        src={category.image}
+                        alt={category.label}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        unoptimized
+                      />
+                    </div>
                   )}
 
-                  <div className={hasGifts ? "" : "py-10"}>
+                  <div>
                     <div className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
                       {category.range}
                     </div>
@@ -754,10 +767,11 @@ export default function Home() {
       <section className="bg-gray-50">
         <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
           <div className="text-center mb-16">
-            <p className="text-red font-medium text-sm uppercase tracking-widest mb-4">What Parents Say</p>
+            <p className="text-red font-medium text-sm uppercase tracking-widest mb-4">Why Giddy Lists?</p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
-              Real Families, Real Results
+              How Giddy Lists Help
             </h2>
+            <p className="mt-4 text-sm text-foreground/40 italic">Illustrative examples of what parents experience</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
@@ -809,20 +823,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== TRUST / PARTNERS ===== */}
-      <section className="bg-white border-y border-gray-100">
-        <div className="mx-auto max-w-6xl px-8 py-16 md:py-20">
-          <p className="text-center text-sm text-foreground/40 mb-10">Works with your favorite stores</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-8">
-            {["Amazon", "Target", "Walmart", "Nordstrom", "Buy Buy Baby", "Pottery Barn Kids"].map((store) => (
-              <span key={store} className="text-xl md:text-2xl font-semibold text-foreground/20 hover:text-foreground/40 transition-colors">
-                {store}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ===== CATEGORIES ===== */}
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
@@ -834,20 +834,23 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
             {[
-              { slug: "toys", label: "Toys & Games" },
-              { slug: "clothing", label: "Clothing" },
-              { slug: "books", label: "Books" },
-              { slug: "gear", label: "Gear" },
-              { slug: "room-decor", label: "Room Decor" },
-              { slug: "outdoor", label: "Outdoor" },
-              { slug: "arts-crafts", label: "Arts & Crafts" },
-              { slug: "electronics", label: "Electronics" },
+              { slug: "toys", label: "Toys & Games", icon: Gamepad2 },
+              { slug: "clothing", label: "Clothing", icon: Shirt },
+              { slug: "books", label: "Books", icon: BookOpen },
+              { slug: "gear", label: "Gear", icon: Baby },
+              { slug: "room-decor", label: "Room Decor", icon: Bed },
+              { slug: "outdoor", label: "Outdoor", icon: TreePine },
+              { slug: "arts-crafts", label: "Arts & Crafts", icon: Palette },
+              { slug: "electronics", label: "Electronics", icon: Laptop },
             ].map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/discover/category/${cat.slug}`}
                 className="group rounded-2xl bg-gray-50 p-8 md:p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300"
               >
+                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red/10 flex items-center justify-center group-hover:bg-red/20 transition-colors">
+                  <cat.icon className="w-6 h-6 text-red" />
+                </div>
                 <h3 className="text-lg md:text-xl font-display font-bold text-foreground group-hover:text-red transition-colors">
                   {cat.label}
                 </h3>
@@ -947,7 +950,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-white mb-4">Discover</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link href="/discover" className="hover:text-white transition-colors">Gift Guides</Link></li>
+                <li><Link href="/guides" className="hover:text-white transition-colors">Giddy Guides</Link></li>
                 <li><Link href="/discover/age/0-2" className="hover:text-white transition-colors">Baby & Toddler</Link></li>
                 <li><Link href="/discover/age/3-5" className="hover:text-white transition-colors">Preschool</Link></li>
                 <li><Link href="/discover/age/6-8" className="hover:text-white transition-colors">Elementary</Link></li>
@@ -959,9 +962,9 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-white mb-4">Create</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link href="/login" className="hover:text-white transition-colors">Start a List</Link></li>
-                <li><Link href="/registry" className="hover:text-white transition-colors">Registries</Link></li>
-                <li><Link href="/collections" className="hover:text-white transition-colors">Collections</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Start a Giddy List</Link></li>
+                <li><Link href="/registry" className="hover:text-white transition-colors">Giddy Shortlists</Link></li>
+                <li><Link href="/guides" className="hover:text-white transition-colors">Giddy Guides</Link></li>
               </ul>
             </div>
 

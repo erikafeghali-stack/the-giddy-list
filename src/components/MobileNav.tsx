@@ -78,17 +78,17 @@ export default function MobileNav() {
           </svg>
         </Link>
 
-        {/* My Kids */}
+        {/* My Lists */}
         <Link
-          href="/my-kids"
+          href="/dashboard"
           className={`flex flex-col items-center gap-0.5 px-4 py-2 transition-colors ${
-            isActive("/my-kids") || isActive("/collections") || isActive("/registry")
+            isActive("/dashboard") || isActive("/collections") || isActive("/registry")
               ? "text-red"
               : "text-foreground/40"
           }`}
         >
-          <svg className="w-6 h-6" fill={isActive("/my-kids") || isActive("/collections") || isActive("/registry") ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive("/my-kids") || isActive("/collections") || isActive("/registry") ? 0 : 1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          <svg className="w-6 h-6" fill={isActive("/dashboard") || isActive("/collections") || isActive("/registry") ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive("/dashboard") || isActive("/collections") || isActive("/registry") ? 0 : 1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
           <span className="text-[10px] font-medium">My Lists</span>
         </Link>

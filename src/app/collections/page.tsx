@@ -52,24 +52,24 @@ export default function CollectionsPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                My Collections
+                My Giddy Guides
               </h1>
               <p className="mt-1 text-foreground/50">
-                Create and share gift guides with your followers
+                Create and share curated gift guides with your followers
               </p>
             </div>
             <Link
               href="/collections/new"
               className="rounded-full bg-red px-5 py-2.5 text-sm font-medium text-white hover:bg-red-hover transition-colors"
             >
-              New Collection
+              New Guide
             </Link>
           </div>
 
           {/* Section Navigation - Tabs */}
           <div className="flex items-center gap-1 mt-6 border-b border-gray-200">
             <Link
-              href="/my-kids"
+              href="/dashboard"
               className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/60 hover:text-foreground transition-colors"
             >
               My Kids
@@ -78,13 +78,13 @@ export default function CollectionsPage() {
               href="/collections"
               className="px-4 py-3 text-sm font-medium border-b-2 border-red text-red"
             >
-              Collections
+              Giddy Guides
             </Link>
             <Link
               href="/registry"
               className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/60 hover:text-foreground transition-colors"
             >
-              Registries
+              Giddy Shortlists
             </Link>
           </div>
         </div>
@@ -100,16 +100,16 @@ export default function CollectionsPage() {
               </svg>
             </div>
             <div className="text-xl font-semibold text-foreground">
-              No collections yet
+              No Giddy Guides yet
             </div>
             <p className="mt-2 text-foreground/50">
-              Create your first gift guide to share with others
+              Create your first Giddy Guide to share with others
             </p>
             <Link
               href="/collections/new"
               className="mt-5 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
             >
-              Create Collection
+              Create Giddy Guide
             </Link>
           </div>
         ) : (
