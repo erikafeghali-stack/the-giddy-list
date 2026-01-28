@@ -493,3 +493,212 @@ export interface UpdateGuideProfileInput {
   social_youtube?: string;
   social_pinterest?: string;
 }
+
+// ============================================
+// AI Suggestion Types
+// ============================================
+
+export type SuggestionContext = 'wishlist' | 'registry' | 'browse';
+
+export interface GiftSuggestion {
+  title: string;
+  description: string;
+  estimated_price: string;
+  category: string;
+  search_query: string;
+}
+
+export interface AISuggestionRequest {
+  kid_id?: string;
+  context: SuggestionContext;
+  existing_items?: string[];
+  age?: number;
+  interests?: string[];
+  limit?: number;
+}
+
+export interface AISuggestionResponse {
+  suggestions: GiftSuggestion[];
+  cached?: boolean;
+}
+
+export interface AISuggestionCache {
+  id: string;
+  kid_id: string;
+  context: SuggestionContext;
+  suggestions: GiftSuggestion[];
+  created_at: string;
+  expires_at: string;
+}
+
+// ============================================
+// Gift Guide Content Engine Types
+// ============================================
+
+export type GuideStatus = 'draft' | 'published' | 'archived';
+
+export type GuideTopicType = 'age' | 'category' | 'occasion' | 'seasonal';
+
+// Product in the products table
+export interface Product {
+  id: string;
+  asin: string | null;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  price: number | null;
+  original_url: string;
+  affiliate_url: string | null;
+  retailer: string;
+  age_range: AgeRange | null;
+  category: CollectionCategory | null;
+  brand: string | null;
+  rating: number | null;
+  review_count: number | null;
+  is_active: boolean;
+  last_scraped_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// AI-generated gift guide
+export interface GiftGuide {
+  id: string;
+  slug: string;
+  title: string;
+  meta_description: string | null;
+  intro_content: string | null;
+  occasion: string | null;
+  age_range: AgeRange | null;
+  category: CollectionCategory | null;
+  keywords: string[];
+  status: GuideStatus;
+  published_at: string | null;
+  view_count: number;
+  cover_image_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Product in a gift guide with additional context
+export interface GiftGuideProduct {
+  id: string;
+  guide_id: string;
+  product_id: string;
+  display_order: number;
+  ai_description: string | null;
+  highlight_reason: string | null;
+  created_at: string;
+}
+
+// Gift guide product with full product details
+export interface GiftGuideProductWithDetails extends GiftGuideProduct {
+  product: Product;
+}
+
+// Gift guide with all products
+export interface GiftGuideWithProducts extends GiftGuide {
+  products: GiftGuideProductWithDetails[];
+}
+
+// Generation log entry
+export interface GuideGenerationLog {
+  id: string;
+  guide_id: string | null;
+  topic_type: GuideTopicType | null;
+  topic_params: Record<string, unknown> | null;
+  status: string;
+  error_message: string | null;
+  tokens_used: number | null;
+  created_at: string;
+}
+
+// Topic schedule configuration
+export interface TopicSchedule {
+  type: GuideTopicType;
+  params: string[];
+}
+
+// AI generation request
+export interface GenerateGuideRequest {
+  topic_type: GuideTopicType;
+  topic_params: string[];
+  product_ids?: string[];
+}
+
+// AI generation response from OpenAI
+export interface AIGuideContent {
+  title: string;
+  metaDescription: string;
+  introContent: string;
+  productDescriptions: {
+    productId: string;
+    description: string;
+    highlightReason: string;
+  }[];
+  keywords: string[];
+  suggestedSlug: string;
+}
+
+// Form types for creating/editing guides
+export interface CreateGuideInput {
+  title: string;
+  slug?: string;
+  meta_description?: string;
+  intro_content?: string;
+  occasion?: string;
+  age_range?: AgeRange;
+  category?: CollectionCategory;
+  keywords?: string[];
+  cover_image_url?: string;
+}
+
+export interface UpdateGuideInput extends Partial<CreateGuideInput> {
+  id: string;
+  status?: GuideStatus;
+}
+
+// Form types for products
+export interface CreateProductInput {
+  url: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  age_range?: AgeRange;
+  category?: CollectionCategory;
+}
+
+export interface UpdateProductInput extends Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>> {
+  id: string;
+}
+
+// Product scrape response (extends existing ScrapedProduct)
+export interface ScrapedProductWithMetadata extends ScrapedProduct {
+  brand?: string;
+  rating?: number;
+  review_count?: number;
+}
+
+// Admin guide list item
+export interface AdminGuideListItem extends GiftGuide {
+  product_count: number;
+}
+
+// Published guide view (from database view)
+export interface PublishedGuideView {
+  id: string;
+  slug: string;
+  title: string;
+  meta_description: string | null;
+  intro_content: string | null;
+  occasion: string | null;
+  age_range: AgeRange | null;
+  category: CollectionCategory | null;
+  keywords: string[];
+  cover_image_url: string | null;
+  view_count: number;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  product_count: number;
+}
