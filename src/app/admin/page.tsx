@@ -19,9 +19,14 @@ interface DashboardStats {
   }>;
 }
 
+type AgeRange = "0-2" | "3-5" | "6-8" | "9-12" | "13-18";
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [discovering, setDiscovering] = useState(false);
+  const [discoverAge, setDiscoverAge] = useState<AgeRange>("3-5");
+  const [discoverResult, setDiscoverResult] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadStats() {
@@ -95,7 +100,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 mb-8">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
         <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
           <h2 className="font-semibold text-foreground mb-4">Quick Actions</h2>
           <div className="space-y-3">
@@ -109,7 +114,7 @@ export default function AdminDashboard() {
               href="/admin/products?add=true"
               className="block w-full rounded-lg bg-foreground/5 px-4 py-3 text-center text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors"
             >
-              Add Product
+              Add Product Manually
             </Link>
           </div>
         </div>
@@ -126,6 +131,62 @@ export default function AdminDashboard() {
           >
             Manage Products →
           </Link>
+        </div>
+
+        {/* AI Product Discovery */}
+        <div className="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 p-6 shadow-sm border border-purple-100">
+          <h2 className="font-semibold text-foreground mb-2">AI Product Discovery</h2>
+          <p className="text-xs text-foreground/50 mb-4">
+            Auto-find trending products from Amazon, TikTok, and parent blogs using AI
+          </p>
+          <div className="flex gap-2 mb-3">
+            <select
+              value={discoverAge}
+              onChange={(e) => setDiscoverAge(e.target.value as AgeRange)}
+              className="flex-1 rounded-lg border border-purple-200 px-3 py-2 text-sm bg-white"
+            >
+              <option value="0-2">Ages 0-2</option>
+              <option value="3-5">Ages 3-5</option>
+              <option value="6-8">Ages 6-8</option>
+              <option value="9-12">Ages 9-12</option>
+              <option value="13-18">Ages 13-18</option>
+            </select>
+          </div>
+          <button
+            onClick={async () => {
+              setDiscovering(true);
+              setDiscoverResult(null);
+              try {
+                const { data: session } = await supabase.auth.getSession();
+                const token = session.session?.access_token;
+                const response = await fetch("/api/products/discover", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ age_range: discoverAge, count: 10 }),
+                });
+                const data = await response.json();
+                setDiscoverResult(data.message || data.error || "Done");
+                // Reload stats
+                const productsResult = await supabase.from("products").select("id").eq("is_active", true);
+                if (stats) {
+                  setStats({ ...stats, totalProducts: productsResult.data?.length || stats.totalProducts });
+                }
+              } catch {
+                setDiscoverResult("Discovery failed");
+              }
+              setDiscovering(false);
+            }}
+            disabled={discovering}
+            className="w-full rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-purple-700 transition-colors disabled:opacity-50"
+          >
+            {discovering ? "Discovering..." : "Discover Products"}
+          </button>
+          {discoverResult && (
+            <p className="mt-2 text-xs text-purple-700 font-medium">{discoverResult}</p>
+          )}
         </div>
       </div>
 

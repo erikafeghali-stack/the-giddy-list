@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createGuide, publishGuide } from "@/lib/guide-generator";
 import { getTodaysTopic, shouldGenerateGuide } from "@/lib/topic-rotation";
+import { discoverProductsForTopic } from "@/lib/product-discovery";
 
 function getServiceClient() {
   return createClient(
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   const supabase = getServiceClient();
-  const results: Array<{ topic: string; status: string; guideId?: string; error?: string }> = [];
+  const results: Array<{ topic: string; status: string; guideId?: string; error?: string; productsDiscovered?: number }> = [];
 
   try {
     // Get today's topic based on day of week
@@ -43,29 +44,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .select("slug, created_at")
       .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
       .order("created_at", { ascending: false });
-
-    // Check available products for this topic
-    let productQuery = supabase
-      .from("products")
-      .select("id")
-      .eq("is_active", true);
-
-    if (topic.type === "age" && topic.params.length > 0) {
-      productQuery = productQuery.in("age_range", topic.params);
-    } else if (topic.type === "category" && topic.params.length > 0) {
-      productQuery = productQuery.in("category", topic.params);
-    }
-
-    const { data: availableProducts, count: productCount } = await productQuery.limit(1);
-
-    if (!availableProducts || availableProducts.length === 0) {
-      console.log(`Skipping generation: No products available for topic ${topic.type}`);
-      return NextResponse.json({
-        success: true,
-        message: "Skipped - no products available for today's topic",
-        topic: `${topic.type}: ${topic.params.join(", ")}`,
-      });
-    }
 
     // Generate guides for each param in today's topic
     for (const param of topic.params) {
@@ -82,14 +60,31 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       }
 
       try {
-        // Generate the guide
-        const { guide, error, logId } = await createGuide(topic.type, [param]);
+        // Auto-discover products if needed
+        console.log(`Checking/discovering products for ${topicKey}...`);
+        const discoveredProducts = await discoverProductsForTopic(topic.type, [param]);
+
+        if (discoveredProducts.length === 0) {
+          results.push({
+            topic: topicKey,
+            status: "skipped",
+            error: "No products available and discovery failed",
+          });
+          continue;
+        }
+
+        console.log(`Found ${discoveredProducts.length} products for ${topicKey}`);
+
+        // Generate the guide using discovered products
+        const productIds = discoveredProducts.map(p => p.id);
+        const { guide, error, logId } = await createGuide(topic.type, [param], productIds);
 
         if (error || !guide) {
           results.push({
             topic: topicKey,
             status: "failed",
             error: error || "Unknown error",
+            productsDiscovered: discoveredProducts.length,
           });
           continue;
         }
@@ -103,6 +98,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             status: "created_not_published",
             guideId: guide.id,
             error: publishError || "Failed to publish",
+            productsDiscovered: discoveredProducts.length,
           });
           continue;
         }
@@ -111,6 +107,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           topic: topicKey,
           status: "success",
           guideId: guide.id,
+          productsDiscovered: discoveredProducts.length,
         });
 
         console.log(`Successfully generated and published guide: ${guide.title} (${guide.slug})`);
