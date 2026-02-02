@@ -56,19 +56,26 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get user's kids
-    const { data: kids, error: kidsError } = await supabase
-      .from("kids")
-      .select("id, name, birthdate, avatar_url")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: true });
+    // Get user's kids and registries in parallel
+    const [kidsResult, registriesResult] = await Promise.all([
+      supabase
+        .from("kids")
+        .select("id, name, birthdate, avatar_url")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("registries")
+        .select("id, name, slug, occasion, kid_id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false }),
+    ]);
 
-    if (kidsError) {
-      console.error("Error fetching kids:", kidsError);
-      return NextResponse.json(
-        { isLoggedIn: true, kids: [] },
-        { headers: corsHeaders }
-      );
+    if (kidsResult.error) {
+      console.error("Error fetching kids:", kidsResult.error);
+    }
+
+    if (registriesResult.error) {
+      console.error("Error fetching registries:", registriesResult.error);
     }
 
     return NextResponse.json(
@@ -76,7 +83,8 @@ export async function GET(request: NextRequest) {
         isLoggedIn: true,
         userId: user.id,
         email: user.email,
-        kids: kids || [],
+        kids: kidsResult.data || [],
+        registries: registriesResult.data || [],
       },
       { headers: corsHeaders }
     );

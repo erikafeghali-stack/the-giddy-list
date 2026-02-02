@@ -5,8 +5,10 @@ const API_BASE = 'https://thegiddylist.com';
 // State
 let currentProduct = null;
 let kids = [];
+let registries = [];
 let isLoggedIn = false;
 let authToken = null;
+let currentDestination = 'wishlist'; // 'wishlist' or 'registry'
 
 // DOM Elements
 const loadingState = document.getElementById('loading');
@@ -19,8 +21,15 @@ const productTitle = document.getElementById('product-title');
 const productPrice = document.getElementById('product-price');
 const productDomain = document.getElementById('product-domain');
 const kidSelect = document.getElementById('kid-select');
+const registrySelect = document.getElementById('registry-select');
+const wishlistSection = document.getElementById('wishlist-section');
+const registrySection = document.getElementById('registry-section');
+const noRegistriesMsg = document.getElementById('no-registries-msg');
+const tabWishlist = document.getElementById('tab-wishlist');
+const tabRegistry = document.getElementById('tab-registry');
 const addBtn = document.getElementById('add-btn');
 const successMessage = document.getElementById('success-message');
+const successText = document.getElementById('success-text');
 const errorMessage = document.getElementById('error-message');
 const errorText = document.getElementById('error-text');
 
@@ -39,7 +48,7 @@ async function init() {
       return;
     }
 
-    // Check auth status and get kids
+    // Check auth status and get kids + registries
     const authData = await checkAuth(authToken);
 
     if (!authData.isLoggedIn) {
@@ -49,6 +58,7 @@ async function init() {
 
     isLoggedIn = true;
     kids = authData.kids || [];
+    registries = authData.registries || [];
 
     // Check if user has kids
     if (kids.length === 0) {
@@ -56,8 +66,9 @@ async function init() {
       return;
     }
 
-    // Populate kids dropdown
+    // Populate dropdowns
     populateKidsDropdown();
+    populateRegistryDropdown();
 
     // Scrape product from current tab
     const product = await scrapeCurrentTab();
@@ -82,7 +93,6 @@ async function getAuthToken() {
   return new Promise((resolve) => {
     chrome.cookies.getAll({ domain: 'thegiddylist.com' }, (cookies) => {
       // Look for Supabase auth cookies
-      // Supabase uses different cookie naming patterns
       const authCookie = cookies.find(c =>
         c.name.includes('auth-token') ||
         c.name.includes('access-token') ||
@@ -105,7 +115,6 @@ async function getAuthToken() {
         return;
       }
 
-      // Log all cookies for debugging
       console.log('Available cookies:', cookies.map(c => c.name));
       resolve(null);
     });
@@ -125,14 +134,14 @@ async function checkAuth(token) {
     });
 
     if (!response.ok) {
-      return { isLoggedIn: false, kids: [] };
+      return { isLoggedIn: false, kids: [], registries: [] };
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('Auth check error:', error);
-    return { isLoggedIn: false, kids: [] };
+    return { isLoggedIn: false, kids: [], registries: [] };
   }
 }
 
@@ -169,9 +178,28 @@ function populateKidsDropdown() {
   });
 }
 
+// Populate registry dropdown
+function populateRegistryDropdown() {
+  registrySelect.innerHTML = '<option value="">Select a registry...</option>';
+
+  if (registries.length === 0) {
+    noRegistriesMsg.classList.remove('hidden');
+    return;
+  }
+
+  noRegistriesMsg.classList.add('hidden');
+
+  registries.forEach(reg => {
+    const option = document.createElement('option');
+    option.value = reg.id;
+    const label = reg.occasion ? `${reg.name} (${reg.occasion})` : reg.name;
+    option.textContent = label;
+    registrySelect.appendChild(option);
+  });
+}
+
 // Display product info
 function displayProduct(product) {
-  // Set image
   if (product.image) {
     productImage.src = product.image;
     productImage.onerror = () => {
@@ -181,10 +209,8 @@ function displayProduct(product) {
     productImage.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="%23ccc" stroke-width="1"%3E%3Crect x="3" y="3" width="18" height="18" rx="2" ry="2"%3E%3C/rect%3E%3Ccircle cx="8.5" cy="8.5" r="1.5"%3E%3C/circle%3E%3Cpolyline points="21 15 16 10 5 21"%3E%3C/polyline%3E%3C/svg%3E';
   }
 
-  // Set title
   productTitle.textContent = product.title || 'Unknown Product';
 
-  // Set price
   if (product.price) {
     productPrice.textContent = '$' + product.price;
     productPrice.style.display = 'block';
@@ -192,7 +218,6 @@ function displayProduct(product) {
     productPrice.style.display = 'none';
   }
 
-  // Set domain
   if (product.domain) {
     productDomain.textContent = product.domain.replace('www.', '');
   }
@@ -200,14 +225,12 @@ function displayProduct(product) {
 
 // Show specific state
 function showState(stateName) {
-  // Hide all states
   loadingState.classList.add('hidden');
   notLoggedInState.classList.add('hidden');
   noKidsState.classList.add('hidden');
   scrapeFailedState.classList.add('hidden');
   productView.classList.add('hidden');
 
-  // Show requested state
   switch (stateName) {
     case 'loading':
       loadingState.classList.remove('hidden');
@@ -227,19 +250,58 @@ function showState(stateName) {
   }
 }
 
-// Handle kid selection
+// Switch between wishlist and registry tabs
+function switchDestination(dest) {
+  currentDestination = dest;
+  hideMessages();
+
+  // Update tab styles
+  tabWishlist.classList.toggle('active', dest === 'wishlist');
+  tabRegistry.classList.toggle('active', dest === 'registry');
+
+  // Show/hide sections
+  if (dest === 'wishlist') {
+    wishlistSection.classList.remove('hidden');
+    registrySection.classList.add('hidden');
+    addBtn.textContent = 'Add to Wishlist';
+    addBtn.disabled = !kidSelect.value;
+  } else {
+    wishlistSection.classList.add('hidden');
+    registrySection.classList.remove('hidden');
+    addBtn.textContent = 'Add to Registry';
+    addBtn.disabled = !registrySelect.value;
+  }
+}
+
+// Tab click handlers
+tabWishlist.addEventListener('click', () => switchDestination('wishlist'));
+tabRegistry.addEventListener('click', () => switchDestination('registry'));
+
+// Handle selections
 kidSelect.addEventListener('change', () => {
-  addBtn.disabled = !kidSelect.value;
+  if (currentDestination === 'wishlist') {
+    addBtn.disabled = !kidSelect.value;
+  }
+  hideMessages();
+});
+
+registrySelect.addEventListener('change', () => {
+  if (currentDestination === 'registry') {
+    addBtn.disabled = !registrySelect.value;
+  }
   hideMessages();
 });
 
 // Handle add button click
-addBtn.addEventListener('click', addToWishlist);
+addBtn.addEventListener('click', addItem);
 
-async function addToWishlist() {
-  if (!currentProduct || !kidSelect.value) return;
+async function addItem() {
+  if (!currentProduct) return;
 
-  const kidId = kidSelect.value;
+  const isWishlist = currentDestination === 'wishlist';
+
+  if (isWishlist && !kidSelect.value) return;
+  if (!isWishlist && !registrySelect.value) return;
 
   // Show loading state
   addBtn.disabled = true;
@@ -248,6 +310,19 @@ async function addToWishlist() {
   hideMessages();
 
   try {
+    const payload = {
+      title: currentProduct.title,
+      image: currentProduct.image,
+      price: currentProduct.price,
+      url: currentProduct.url,
+    };
+
+    if (isWishlist) {
+      payload.kidId = kidSelect.value;
+    } else {
+      payload.registryId = registrySelect.value;
+    }
+
     const response = await fetch(`${API_BASE}/api/wishlist/add-external`, {
       method: 'POST',
       credentials: 'include',
@@ -255,13 +330,7 @@ async function addToWishlist() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify({
-        kidId: kidId,
-        title: currentProduct.title,
-        image: currentProduct.image,
-        price: currentProduct.price,
-        url: currentProduct.url
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
@@ -271,13 +340,14 @@ async function addToWishlist() {
     }
 
     // Show success
+    successText.textContent = data.message || (isWishlist ? 'Added to wishlist!' : 'Added to registry!');
     successMessage.classList.remove('hidden');
     addBtn.textContent = 'Added!';
     addBtn.classList.remove('adding');
 
     // Reset after delay
     setTimeout(() => {
-      addBtn.textContent = 'Add to Wishlist';
+      addBtn.textContent = isWishlist ? 'Add to Wishlist' : 'Add to Registry';
       addBtn.disabled = false;
     }, 2000);
 
@@ -285,7 +355,7 @@ async function addToWishlist() {
     console.error('Add error:', error);
     errorText.textContent = error.message || 'Something went wrong';
     errorMessage.classList.remove('hidden');
-    addBtn.textContent = 'Add to Wishlist';
+    addBtn.textContent = isWishlist ? 'Add to Wishlist' : 'Add to Registry';
     addBtn.classList.remove('adding');
     addBtn.disabled = false;
   }

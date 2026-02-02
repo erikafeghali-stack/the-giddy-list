@@ -28,7 +28,7 @@
         </svg>
       </div>
       <h2>Log in to add items</h2>
-      <p>Sign in to The Giddy List to save gifts to your kids' wishlists.</p>
+      <p>Sign in to The Giddy List to save gifts to wishlists and registries.</p>
       <a href="https://thegiddylist.com/login" target="_blank" class="btn btn-primary">
         Log In
       </a>
@@ -81,12 +81,39 @@
         </div>
       </div>
 
+      <!-- Destination Toggle -->
+      <div class="destination-toggle">
+        <button id="tab-wishlist" class="toggle-btn active" data-dest="wishlist">
+          <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          Wishlist
+        </button>
+        <button id="tab-registry" class="toggle-btn" data-dest="registry">
+          <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v13m0-13V6a2 2 0 1 1 2 2h-2zm0 0V5.5A2.5 2.5 0 1 0 9.5 8H12zm-7 4h14M5 12a2 2 0 1 1 0-4h14a2 2 0 1 1 0 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"></path>
+          </svg>
+          Registry
+        </button>
+      </div>
+
       <!-- Wishlist Selection -->
-      <div class="form-group">
+      <div id="wishlist-section" class="form-group">
         <label for="kid-select">Add to wishlist:</label>
         <select id="kid-select" class="select">
           <option value="">Select a kid...</option>
         </select>
+      </div>
+
+      <!-- Registry Selection -->
+      <div id="registry-section" class="form-group hidden">
+        <label for="registry-select">Add to registry:</label>
+        <select id="registry-select" class="select">
+          <option value="">Select a registry...</option>
+        </select>
+        <p id="no-registries-msg" class="helper-text hidden">
+          No registries yet. <a href="https://thegiddylist.com/registry/new" target="_blank">Create one</a>
+        </p>
       </div>
 
       <!-- Add Button -->
@@ -100,7 +127,7 @@
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
-        <span>Added to wishlist!</span>
+        <span id="success-text">Added!</span>
       </div>
 
       <!-- Error Message -->

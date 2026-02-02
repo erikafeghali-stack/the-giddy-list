@@ -199,10 +199,76 @@ body {
   color: #999;
 }
 
+/* Destination Toggle */
+.destination-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-btn:hover {
+  color: #555;
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #E31837;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Helper text */
+.helper-text {
+  font-size: 12px;
+  color: #999;
+  margin-top: 6px;
+}
+
+.helper-text.hidden {
+  display: none;
+}
+
+.helper-text a {
+  color: #E31837;
+  text-decoration: none;
+}
+
+.helper-text a:hover {
+  text-decoration: underline;
+}
+
 /* Form Elements */
 .form-group {
   margin-bottom: 12px;
   text-align: left;
+}
+
+.form-group.hidden {
+  display: none;
 }
 
 .form-group label {
