@@ -282,20 +282,20 @@ export default function Home() {
       {/* ===== HERO SECTION ===== */}
       <section className="relative h-screen min-h-[600px] max-h-[900px] md:max-h-[1000px] overflow-hidden">
         <AnimatedImageGrid variant="hero" />
-        {/* Gradient overlays for text readability without obscuring images */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+        {/* Light gradient at bottom only for text readability - images show clearly */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-transparent" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 md:pb-28 px-6 text-center">
           <h1
-            className="font-[family-name:var(--font-fraunces)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight"
-            style={{ textShadow: "0 2px 30px rgba(0,0,0,0.5), 0 4px 60px rgba(0,0,0,0.3)" }}
+            className="font-[family-name:var(--font-rokkitt)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
+            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7), 0 4px 40px rgba(0,0,0,0.4)" }}
           >
             Gifts that make<br />them giddy.
           </h1>
 
           <p
-            className="mt-5 md:mt-6 text-lg sm:text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium"
-            style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}
+            className="mt-5 md:mt-6 text-lg sm:text-xl md:text-2xl text-white/95 max-w-2xl mx-auto leading-relaxed font-[family-name:var(--font-rokkitt)] font-medium"
+            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5)" }}
           >
             Wishlists for your family. Gift Guides that earn you money. All in one curated place.
           </p>
