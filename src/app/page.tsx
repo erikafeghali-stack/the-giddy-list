@@ -282,8 +282,9 @@ export default function Home() {
       {/* ===== HERO SECTION ===== */}
       <section className="relative h-screen min-h-[600px] max-h-[900px] md:max-h-[1000px] overflow-hidden">
         <VideoHeroGrid />
-        {/* Light gradient at bottom only for text readability - videos show clearly */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-transparent" />
+        {/* Subtle overlay for text readability over full-screen video */}
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 md:pb-28 px-6 text-center">
           <h1
