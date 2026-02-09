@@ -280,7 +280,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* ===== HERO SECTION ===== */}
-      <section className="relative h-screen min-h-[600px] max-h-[900px] md:max-h-[1000px] overflow-hidden">
+      <section className="relative h-screen min-h-[600px] overflow-hidden">
         <VideoHeroGrid />
         {/* Gradient overlay for text readability over video grid */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-transparent" />

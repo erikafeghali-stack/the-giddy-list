@@ -15,6 +15,7 @@ function NavDropdown({
   children,
   dropdownRef,
   icon,
+  transparent,
 }: {
   label: string;
   isOpen: boolean;
@@ -22,12 +23,17 @@ function NavDropdown({
   children: React.ReactNode;
   dropdownRef: React.RefObject<HTMLDivElement | null>;
   icon?: React.ReactNode;
+  transparent?: boolean;
 }) {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-base font-medium text-foreground/60 hover:text-foreground transition-all duration-150"
+        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-base font-medium transition-all duration-150 ${
+          transparent
+            ? "text-white/80 hover:text-white"
+            : "text-foreground/60 hover:text-foreground"
+        }`}
       >
         {label}
         {icon}
@@ -86,6 +92,7 @@ export default function GlobalNav() {
   const [profile, setProfile] = useState<(CreatorProfile & { guide_enabled?: boolean; guide_tier?: string }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const isTransparent = pathname === "/" && !scrolled;
 
   // Dropdown states
   const [discoverOpen, setDiscoverOpen] = useState(false);
@@ -229,7 +236,13 @@ export default function GlobalNav() {
         }
       `}</style>
 
-      <nav className={`sticky top-0 z-50 bg-white/98 backdrop-blur-md transition-shadow duration-200 ${scrolled ? "shadow-sm" : ""}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/98 backdrop-blur-md shadow-sm"
+          : pathname === "/"
+            ? "bg-transparent"
+            : "bg-white/98 backdrop-blur-md"
+      }`}>
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           {/* Logo - Wordmark Image */}
           <Link
@@ -241,7 +254,9 @@ export default function GlobalNav() {
             <img
               src="/logo.png"
               alt="The Giddy List"
-              className="h-14 md:h-16 w-auto"
+              className={`h-14 md:h-16 w-auto transition-all duration-300 ${
+                isTransparent ? "brightness-0 invert" : ""
+              }`}
             />
           </Link>
 
@@ -259,6 +274,7 @@ export default function GlobalNav() {
                     setCreateEarnOpen(false);
                   }}
                   dropdownRef={myFamilyRef}
+                  transparent={isTransparent}
                 >
                   <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>My Kids</DropdownItem>
                   <DropdownDivider />
@@ -277,6 +293,7 @@ export default function GlobalNav() {
                   }}
                   dropdownRef={createEarnRef}
                   icon={dollarIcon}
+                  transparent={isTransparent}
                 >
                   <DropdownItem href="/collections" onClick={closeAllDropdowns}>My Guides</DropdownItem>
                   <DropdownItem href={profile?.guide_enabled ? "/dashboard/earnings" : "/dashboard/become-guide"} onClick={closeAllDropdowns}>
@@ -303,6 +320,7 @@ export default function GlobalNav() {
                     setCreateEarnOpen(false);
                   }}
                   dropdownRef={discoverRef}
+                  transparent={isTransparent}
                 >
                   <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
                   <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
@@ -324,6 +342,7 @@ export default function GlobalNav() {
                     setForParentsOpen(false);
                   }}
                   dropdownRef={discoverRef}
+                  transparent={isTransparent}
                 >
                   <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
                   <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
@@ -343,6 +362,7 @@ export default function GlobalNav() {
                     setDiscoverOpen(false);
                   }}
                   dropdownRef={forParentsRef}
+                  transparent={isTransparent}
                 >
                   <DropdownItem href="/#how-it-works" onClick={closeAllDropdowns}>How It Works</DropdownItem>
                   <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Wishlist</DropdownItem>
@@ -377,7 +397,9 @@ export default function GlobalNav() {
                       setMyFamilyOpen(false);
                       setCreateEarnOpen(false);
                     }}
-                    className="flex items-center gap-2 rounded-full p-1 hover:bg-gray-100 transition-all duration-150"
+                    className={`flex items-center gap-2 rounded-full p-1 transition-all duration-150 ${
+                      isTransparent ? "hover:bg-white/10" : "hover:bg-gray-100"
+                    }`}
                   >
                     <Avatar
                       src={profile?.avatar_url}
@@ -385,9 +407,9 @@ export default function GlobalNav() {
                       size="sm"
                     />
                     <svg
-                      className={`w-4 h-4 text-foreground/40 transition-transform duration-200 ${
+                      className={`w-4 h-4 transition-transform duration-200 ${
                         profileOpen ? "rotate-180" : ""
-                      }`}
+                      } ${isTransparent ? "text-white/60" : "text-foreground/40"}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -441,7 +463,11 @@ export default function GlobalNav() {
                 </Link>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-base font-medium text-foreground/60 hover:text-foreground transition-all duration-150"
+                  className={`px-4 py-2 text-base font-medium transition-all duration-150 ${
+                    isTransparent
+                      ? "text-white/80 hover:text-white"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
                 >
                   Log In
                 </Link>
