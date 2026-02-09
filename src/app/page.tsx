@@ -856,8 +856,9 @@ export default function Home() {
               © {new Date().getFullYear()} Giddy List. Made with love for parents who get it.
             </div>
             <div className="flex items-center gap-6 text-sm">
-              <Link href="#" className="text-white/30 hover:text-white/60 transition-colors">Privacy</Link>
-              <Link href="#" className="text-white/30 hover:text-white/60 transition-colors">Terms</Link>
+              <Link href="/support" className="text-white/30 hover:text-white/60 transition-colors">Support</Link>
+              <Link href="/privacy" className="text-white/30 hover:text-white/60 transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-white/30 hover:text-white/60 transition-colors">Terms</Link>
             </div>
           </div>
         </div>
