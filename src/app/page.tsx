@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Collection, CreatorProfile, TrendingGift, AgeRange, PublicGuideProfile, GuideTier } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import ProductImage from "@/components/ProductImage";
-import AnimatedImageGrid from "@/components/AnimatedImageGrid";
+import VideoHeroGrid from "@/components/VideoHeroGrid";
 import { Gamepad2, Shirt, BookOpen, Baby, Bed, TreePine, Palette, Laptop } from "lucide-react";
 
 // Age categories configuration
@@ -281,8 +281,8 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       {/* ===== HERO SECTION ===== */}
       <section className="relative h-screen min-h-[600px] max-h-[900px] md:max-h-[1000px] overflow-hidden">
-        <AnimatedImageGrid variant="hero" />
-        {/* Light gradient at bottom only for text readability - images show clearly */}
+        <VideoHeroGrid />
+        {/* Light gradient at bottom only for text readability - videos show clearly */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-transparent" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 md:pb-28 px-6 text-center">

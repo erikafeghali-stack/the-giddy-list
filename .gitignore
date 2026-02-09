@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# secrets
+client_secret*.json
+*.credentials.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
