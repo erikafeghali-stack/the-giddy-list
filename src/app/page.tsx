@@ -294,7 +294,7 @@ export default function Home() {
           </h1>
 
           <p
-            className="mt-5 md:mt-6 text-lg sm:text-xl md:text-2xl text-white/95 max-w-2xl mx-auto leading-relaxed font-[family-name:var(--font-rokkitt)] font-medium"
+            className="mt-5 md:mt-6 text-base sm:text-lg md:text-2xl text-white/95 max-w-4xl mx-auto whitespace-nowrap leading-relaxed font-[family-name:var(--font-rokkitt)] font-medium"
             style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5)" }}
           >
             Wishlists for your family. Gift Guides that earn you money. All in one curated place.
