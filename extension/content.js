@@ -1,4 +1,7 @@
 // Content script for scraping product data from any page
+// Injected on-demand via chrome.scripting.executeScript
+
+(() => {
 
 // Product data scraping functions
 function scrapeProductData() {
@@ -240,11 +243,7 @@ function isValidImageUrl(url) {
   return url.startsWith('http') || url.startsWith('data:image');
 }
 
-// Listen for messages from popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'scrapeProduct') {
-    const data = scrapeProductData();
-    sendResponse(data);
-  }
-  return true; // Keep channel open for async response
-});
+// Return scraped data (used by chrome.scripting.executeScript)
+return scrapeProductData();
+
+})();

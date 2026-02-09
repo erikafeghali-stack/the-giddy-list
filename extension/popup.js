@@ -248,25 +248,30 @@ async function checkAuth(token) {
   }
 }
 
-// Scrape product from current tab
+// Scrape product from current tab using programmatic injection
 async function scrapeCurrentTab() {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs[0]) {
-        resolve(null);
-        return;
-      }
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab || !tab.id) return null;
 
-      chrome.tabs.sendMessage(tabs[0].id, { action: 'scrapeProduct' }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.error('Scrape error:', chrome.runtime.lastError);
-          resolve(null);
-          return;
-        }
-        resolve(response);
-      });
+    // Skip chrome:// and other restricted pages
+    if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('about:')) {
+      return null;
+    }
+
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content.js']
     });
-  });
+
+    if (results && results[0] && results[0].result) {
+      return results[0].result;
+    }
+    return null;
+  } catch (error) {
+    console.error('Scrape error:', error);
+    return null;
+  }
 }
 
 // Populate kids dropdown
