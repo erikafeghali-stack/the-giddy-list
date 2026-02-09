@@ -285,30 +285,24 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/35 md:bg-black/30" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center px-8 text-center">
-          {/* Logo wordmark */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="The Giddy List"
-            className="w-[280px] sm:w-[350px] md:w-[450px] lg:w-[500px] h-auto drop-shadow-2xl"
-          />
+          {/* Hero text overlay */}
+          <div className="rounded-2xl bg-black/30 backdrop-blur-sm px-8 py-10 md:px-14 md:py-12 max-w-2xl">
+            <h1
+              className="font-[family-name:var(--font-fraunces)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight"
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.4)" }}
+            >
+              Gifts that make them giddy.
+            </h1>
 
-          {/* Tagline */}
-          <p
-            className="mt-4 text-2xl md:text-3xl lg:text-4xl font-medium text-white/90"
-            style={{ textShadow: "0 2px 15px rgba(0,0,0,0.3)" }}
-          >
-            Gifts that make them giddy.
-          </p>
+            <p
+              className="mt-5 md:mt-6 text-base sm:text-lg md:text-xl text-white/85 max-w-xl mx-auto leading-relaxed"
+              style={{ textShadow: "0 2px 12px rgba(0,0,0,0.4)" }}
+            >
+              Wishlists for your family. Gift Guides that earn you money. All in one curated place.
+            </p>
+          </div>
 
-          <p
-            className="mt-6 md:mt-8 text-base md:text-lg text-white/70 max-w-lg leading-relaxed"
-            style={{ textShadow: "0 2px 15px rgba(0,0,0,0.3)" }}
-          >
-            Wishlists for your family. Guides that earn you money. All in one place.
-          </p>
-
-          <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/login"
               className="w-full sm:w-auto rounded-full bg-red px-10 py-4 md:px-12 md:py-5 text-base md:text-lg font-semibold text-white hover:bg-red-hover transition-all duration-200 hover:scale-[1.02] shadow-2xl"
