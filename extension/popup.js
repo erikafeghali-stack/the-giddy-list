@@ -1,6 +1,7 @@
 // The Giddy List Chrome Extension - Popup Script
 
 const API_BASE = 'https://thegiddylist.com';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 // State
 let currentProduct = null;
@@ -33,23 +34,98 @@ const successText = document.getElementById('success-text');
 const errorMessage = document.getElementById('error-message');
 const errorText = document.getElementById('error-text');
 
-// Initialize popup
+// ─── Storage helpers ───────────────────────────────────────────────
+
+// Save data to chrome.storage.local
+function saveToStorage(data) {
+  return new Promise((resolve) => {
+    chrome.storage.local.set(data, resolve);
+  });
+}
+
+// Get data from chrome.storage.local
+function getFromStorage(keys) {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(keys, resolve);
+  });
+}
+
+// Save last-used preferences (selected kid/registry, active tab)
+async function savePreferences() {
+  await saveToStorage({
+    lastKidId: kidSelect.value || '',
+    lastRegistryId: registrySelect.value || '',
+    lastDestination: currentDestination,
+  });
+}
+
+// Load cached auth data if still fresh
+async function loadCachedAuth() {
+  const cached = await getFromStorage(['cachedAuth', 'cachedAuthTime']);
+  if (cached.cachedAuth && cached.cachedAuthTime) {
+    const age = Date.now() - cached.cachedAuthTime;
+    if (age < CACHE_TTL) {
+      return cached.cachedAuth;
+    }
+  }
+  return null;
+}
+
+// Cache auth data
+async function cacheAuthData(data) {
+  await saveToStorage({
+    cachedAuth: data,
+    cachedAuthTime: Date.now(),
+  });
+}
+
+// Track recently added items to prevent duplicates
+async function wasRecentlyAdded(url) {
+  const { recentItems } = await getFromStorage(['recentItems']);
+  if (!recentItems) return false;
+  return recentItems.some(item => item.url === url && (Date.now() - item.addedAt) < 60000);
+}
+
+async function markAsAdded(url) {
+  const { recentItems } = await getFromStorage(['recentItems']);
+  const items = (recentItems || []).filter(item => (Date.now() - item.addedAt) < 300000); // keep last 5 min
+  items.push({ url, addedAt: Date.now() });
+  await saveToStorage({ recentItems: items });
+}
+
+// ─── Initialize ────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   showState('loading');
 
   try {
+    // Try cached auth first for faster popup
+    const cached = await loadCachedAuth();
+
     // Get auth token from cookies
     authToken = await getAuthToken();
 
     if (!authToken) {
+      // Clear cache on logout
+      await saveToStorage({ cachedAuth: null, cachedAuthTime: null });
       showState('not-logged-in');
       return;
     }
 
-    // Check auth status and get kids + registries
-    const authData = await checkAuth(authToken);
+    let authData;
+
+    if (cached && cached.isLoggedIn) {
+      // Use cache for instant display
+      authData = cached;
+    } else {
+      // Fresh fetch
+      authData = await checkAuth(authToken);
+      if (authData.isLoggedIn) {
+        await cacheAuthData(authData);
+      }
+    }
 
     if (!authData.isLoggedIn) {
       showState('not-logged-in');
@@ -70,6 +146,18 @@ async function init() {
     populateKidsDropdown();
     populateRegistryDropdown();
 
+    // Restore user preferences
+    const prefs = await getFromStorage(['lastKidId', 'lastRegistryId', 'lastDestination']);
+    if (prefs.lastKidId && kids.some(k => k.id === prefs.lastKidId)) {
+      kidSelect.value = prefs.lastKidId;
+    }
+    if (prefs.lastRegistryId && registries.some(r => r.id === prefs.lastRegistryId)) {
+      registrySelect.value = prefs.lastRegistryId;
+    }
+    if (prefs.lastDestination) {
+      switchDestination(prefs.lastDestination);
+    }
+
     // Scrape product from current tab
     const product = await scrapeCurrentTab();
 
@@ -81,6 +169,21 @@ async function init() {
     currentProduct = product;
     displayProduct(product);
     showState('product-view');
+
+    // Check if this item was recently added
+    if (await wasRecentlyAdded(product.url)) {
+      successText.textContent = 'Already added recently!';
+      successMessage.classList.remove('hidden');
+    }
+
+    // Refresh auth in background (don't await)
+    if (cached) {
+      checkAuth(authToken).then(async (freshData) => {
+        if (freshData.isLoggedIn) {
+          await cacheAuthData(freshData);
+        }
+      }).catch(() => {});
+    }
 
   } catch (error) {
     console.error('Init error:', error);
@@ -277,12 +380,13 @@ function switchDestination(dest) {
 tabWishlist.addEventListener('click', () => switchDestination('wishlist'));
 tabRegistry.addEventListener('click', () => switchDestination('registry'));
 
-// Handle selections
+// Handle selections - save preferences on change
 kidSelect.addEventListener('change', () => {
   if (currentDestination === 'wishlist') {
     addBtn.disabled = !kidSelect.value;
   }
   hideMessages();
+  savePreferences();
 });
 
 registrySelect.addEventListener('change', () => {
@@ -290,6 +394,7 @@ registrySelect.addEventListener('change', () => {
     addBtn.disabled = !registrySelect.value;
   }
   hideMessages();
+  savePreferences();
 });
 
 // Handle add button click
@@ -338,6 +443,12 @@ async function addItem() {
     if (!response.ok) {
       throw new Error(data.error || 'Failed to add item');
     }
+
+    // Track this item as recently added
+    await markAsAdded(currentProduct.url);
+
+    // Save preferences after successful add
+    await savePreferences();
 
     // Show success
     successText.textContent = data.message || (isWishlist ? 'Added to wishlist!' : 'Added to registry!');
