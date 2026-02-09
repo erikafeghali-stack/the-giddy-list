@@ -282,25 +282,23 @@ export default function Home() {
       {/* ===== HERO SECTION ===== */}
       <section className="relative h-screen min-h-[600px] max-h-[900px] md:max-h-[1000px] overflow-hidden">
         <AnimatedImageGrid variant="hero" />
-        <div className="absolute inset-0 bg-black/35 md:bg-black/30" />
+        {/* Gradient overlays for text readability without obscuring images */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-8 text-center">
-          {/* Hero text overlay */}
-          <div className="rounded-2xl bg-black/30 backdrop-blur-sm px-8 py-10 md:px-14 md:py-12 max-w-2xl">
-            <h1
-              className="font-[family-name:var(--font-fraunces)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight"
-              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.4)" }}
-            >
-              Gifts that make them giddy.
-            </h1>
+        <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 md:pb-28 px-6 text-center">
+          <h1
+            className="font-[family-name:var(--font-fraunces)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight"
+            style={{ textShadow: "0 2px 30px rgba(0,0,0,0.5), 0 4px 60px rgba(0,0,0,0.3)" }}
+          >
+            Gifts that make<br />them giddy.
+          </h1>
 
-            <p
-              className="mt-5 md:mt-6 text-base sm:text-lg md:text-xl text-white/85 max-w-xl mx-auto leading-relaxed"
-              style={{ textShadow: "0 2px 12px rgba(0,0,0,0.4)" }}
-            >
-              Wishlists for your family. Gift Guides that earn you money. All in one curated place.
-            </p>
-          </div>
+          <p
+            className="mt-5 md:mt-6 text-lg sm:text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium"
+            style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}
+          >
+            Wishlists for your family. Gift Guides that earn you money. All in one curated place.
+          </p>
 
           <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
