@@ -10,13 +10,13 @@ import ProductImage from "@/components/ProductImage";
 import VideoHeroGrid from "@/components/VideoHeroGrid";
 import { Gamepad2, Shirt, BookOpen, Baby, Bed, TreePine, Palette, Laptop } from "lucide-react";
 
-// Age categories configuration
+// Age categories with editorial-quality imagery
 const AGE_CATEGORIES: { range: AgeRange; label: string; description: string; image: string }[] = [
-  { range: "0-2", label: "Baby & Toddler", description: "First toys, teethers & nursery", image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop" },
-  { range: "3-5", label: "Preschool", description: "Creative play & learning", image: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=400&fit=crop" },
-  { range: "6-8", label: "Early Elementary", description: "Building sets & books", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=400&h=400&fit=crop" },
-  { range: "9-12", label: "Tweens", description: "Tech & hobbies", image: "https://images.unsplash.com/photo-1489710437720-ebb67ec84dd2?w=400&h=400&fit=crop" },
-  { range: "13-18", label: "Teens", description: "Fashion & experiences", image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&h=400&fit=crop" },
+  { range: "0-2", label: "Baby & Toddler", description: "First toys, teethers & nursery", image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=600&fit=crop&crop=faces" },
+  { range: "3-5", label: "Preschool", description: "Creative play & learning", image: "https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=600&h=600&fit=crop&crop=faces" },
+  { range: "6-8", label: "Early Elementary", description: "Building sets & books", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=600&h=600&fit=crop&crop=faces" },
+  { range: "9-12", label: "Tweens", description: "Tech & hobbies", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&h=600&fit=crop&crop=faces" },
+  { range: "13-18", label: "Teens", description: "Fashion & experiences", image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=600&fit=crop&crop=faces" },
 ];
 
 // Sample collections for when database is empty
@@ -324,193 +324,133 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== VALUE PROPS - SPLIT SECTION ===== */}
+      {/* ===== VALUE PROPS ===== */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-24 md:py-32">
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
+          <div className="text-center mb-20">
+            <p className="text-red font-medium text-sm uppercase tracking-[0.2em] mb-5">Two ways to use Giddy List</p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight leading-tight">
+              Built for families.<br className="hidden md:block" /> Powered by creators.
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             {/* FOR FAMILIES */}
-            <div className="rounded-3xl bg-red-light/30 p-8 md:p-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-red/10 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-red" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">For Families</h2>
+            <div className="group relative overflow-hidden rounded-[2rem] bg-[#FFF5F6] p-10 md:p-14">
+              <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-10">For Families</h3>
+              <div className="space-y-8">
+                {[
+                  { title: "Wishlists", desc: "Running lists that grow with your kids. Grandma always sees the latest sizes." },
+                  { title: "Registries", desc: "Shareable lists for birthdays, holidays, and every gift-giving occasion." },
+                  { title: "Always free", desc: "No cost, no catch. Just better gift-giving for your family." },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-5">
+                    <div className="flex-shrink-0 w-1 rounded-full bg-red/30" />
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">{item.title}</h4>
+                      <p className="mt-1.5 text-foreground/50 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Wishlists</h3>
-                  <p className="mt-1 text-foreground/60">Keep running lists of things your kids want. Update sizes anytime — grandma always sees the latest.</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Registries</h3>
-                  <p className="mt-1 text-foreground/60">Create shareable lists for birthdays, holidays, graduations — any gift-giving occasion.</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Always Free</h3>
-                  <p className="mt-1 text-foreground/60">No cost to create and share lists with your family and friends.</p>
-                </div>
-              </div>
-
               <Link
                 href="/login"
-                className="mt-8 inline-block rounded-full bg-red px-8 py-3 text-base font-semibold text-white hover:bg-red-hover transition-all"
+                className="mt-10 inline-flex items-center gap-2 rounded-full bg-red px-8 py-3.5 text-base font-semibold text-white hover:bg-red-hover transition-all duration-200"
               >
                 Start Free
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </Link>
             </div>
 
             {/* FOR CREATORS */}
-            <div className="rounded-3xl bg-gradient-to-br from-gold-light/40 to-gold-light/20 p-8 md:p-10 border border-gold/20">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">For Creators</h2>
+            <div className="group relative overflow-hidden rounded-[2rem] bg-[#FBF8EF] p-10 md:p-14">
+              <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-10">For Creators</h3>
+              <div className="space-y-8">
+                {[
+                  { title: "Curate guides", desc: "Share your expertise on the best toys, gear, and gifts for every age." },
+                  { title: "Earn commission", desc: "Get paid when people shop your picks. 5 followers or 5 million." },
+                  { title: "No minimums", desc: "Any parent can become a creator. No follower count required." },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-5">
+                    <div className="flex-shrink-0 w-1 rounded-full bg-gold/40" />
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">{item.title}</h4>
+                      <p className="mt-1.5 text-foreground/50 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Guides</h3>
-                  <p className="mt-1 text-foreground/60">Curate gift recommendations for other parents. Share your expertise on the best toys, gear, and gifts.</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Earn</h3>
-                  <p className="mt-1 text-foreground/60">Get paid commission when people shop your guides. Share with 5 people or 5 million.</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">No Minimum</h3>
-                  <p className="mt-1 text-foreground/60">Any parent can become a creator. No follower count required to start earning.</p>
-                </div>
-              </div>
-
               <Link
                 href="/dashboard/become-guide"
-                className="mt-8 inline-block rounded-full bg-gradient-to-r from-gold to-gold-dark px-8 py-3 text-base font-semibold text-white hover:opacity-90 transition-all"
+                className="mt-10 inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-base font-semibold text-white hover:bg-foreground/90 transition-all duration-200"
               >
                 Create & Earn
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </Link>
             </div>
-          </div>
-
-          {/* Earning Disclaimer */}
-          <div className="mt-12 rounded-2xl border border-gold/30 bg-gradient-to-r from-gold-light/20 to-white p-6 flex items-start gap-4">
-            <div className="flex-shrink-0 text-2xl">💡</div>
-            <p className="text-foreground/70">
-              <span className="font-semibold text-foreground">Personal wishlists and registries are free for families.</span> Only gift guide creators earn money when people shop their recommendations.
-            </p>
           </div>
         </div>
       </section>
 
-      {/* ===== HOW IT WORKS - SPLIT SECTION ===== */}
-      <section id="how-it-works" className="bg-gray-50">
-        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
-          <div className="text-center mb-16">
+      {/* ===== HOW IT WORKS ===== */}
+      <section id="how-it-works" className="border-t border-gray-100">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
+          <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               How It Works
             </h2>
+            <p className="mt-6 text-lg text-foreground/40 max-w-md mx-auto">
+              Simple for families. Powerful for creators.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-            {/* Family Lists Flow */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-8 h-8 rounded-full bg-red flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                  </svg>
+          <div className="grid md:grid-cols-4 gap-8 md:gap-12">
+            {[
+              { num: "01", title: "Add your kids", desc: "Ages, sizes, interests. Your family profile keeps everything in one place." },
+              { num: "02", title: "Build lists", desc: "Paste product URLs from any store. We pull in details automatically." },
+              { num: "03", title: "Share your link", desc: "Send to grandparents, friends, anyone. They see exactly what your kids want." },
+              { num: "04", title: "Perfect gifts", desc: "No duplicates, right sizes, happy kids. Or curate guides and earn commission." },
+            ].map((item) => (
+              <div key={item.num} className="group">
+                <div className="text-5xl md:text-6xl font-display font-bold text-foreground/[0.06] mb-6">
+                  {item.num}
                 </div>
-                <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">Family Lists</h3>
+                <h3 className="text-xl font-display font-bold text-foreground mb-3">{item.title}</h3>
+                <p className="text-foreground/45 leading-relaxed">{item.desc}</p>
               </div>
+            ))}
+          </div>
 
-              <div className="space-y-6">
-                {[
-                  { step: 1, title: "Add Your Kids", desc: "Ages, sizes, and interests" },
-                  { step: 2, title: "Build Lists", desc: "Paste URLs from any store" },
-                  { step: 3, title: "Share Your Link", desc: "Family buys what they want" },
-                  { step: 4, title: "Get Perfect Gifts", desc: "No duplicates, right sizes" },
-                ].map((item) => (
-                  <div key={item.step} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red text-white font-bold flex items-center justify-center shadow-lg shadow-red/20">
-                      {item.step}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">{item.title}</h4>
-                      <p className="text-sm text-foreground/60">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="/login"
-                className="mt-8 inline-block rounded-full bg-red px-8 py-3 text-base font-semibold text-white hover:bg-red-hover transition-all"
-              >
-                Start Free
-              </Link>
-            </div>
-
-            {/* Create Guides & Earn Flow */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">Create Guides & Earn</h3>
-              </div>
-
-              <div className="space-y-6">
-                {[
-                  { step: 1, title: "Curate Products", desc: "Pick great gifts by age/category" },
-                  { step: 2, title: "Write Your Guide", desc: "Share your expertise" },
-                  { step: 3, title: "Publish & Share", desc: "Get your unique guide link" },
-                  { step: 4, title: "Earn Commission", desc: "Get paid when people shop" },
-                ].map((item) => (
-                  <div key={item.step} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gold text-white font-bold flex items-center justify-center shadow-lg shadow-gold/20">
-                      {item.step}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">{item.title}</h4>
-                      <p className="text-sm text-foreground/60">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="/dashboard/become-guide"
-                className="mt-8 inline-block rounded-full bg-gradient-to-r from-gold to-gold-dark px-8 py-3 text-base font-semibold text-white hover:opacity-90 transition-all"
-              >
-                Create & Earn
-              </Link>
-            </div>
+          <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/login"
+              className="rounded-full bg-red px-8 py-3.5 text-base font-semibold text-white hover:bg-red-hover transition-all duration-200"
+            >
+              Start Free
+            </Link>
+            <Link
+              href="/dashboard/become-guide"
+              className="rounded-full border-2 border-foreground/15 px-8 py-3.5 text-base font-semibold text-foreground hover:border-foreground/30 transition-all duration-200"
+            >
+              Create & Earn
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ===== SHOP BY AGE ===== */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
+      <section className="bg-[#FAFAF8]">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Shop by Age
             </h2>
-            <p className="mt-6 text-lg md:text-xl text-foreground/40 max-w-lg mx-auto">
-              Curated gift ideas updated daily
+            <p className="mt-5 text-lg text-foreground/40">
+              Curated gift ideas for every stage
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
             {AGE_CATEGORIES.map((category) => {
               const gifts = trendingGifts[category.range] || [];
               const hasGifts = gifts.length > 0;
@@ -519,46 +459,39 @@ export default function Home() {
                 <Link
                   key={category.range}
                   href={`/discover/age/${category.range}`}
-                  className="group relative rounded-3xl bg-gray-50 p-6 md:p-8 hover:bg-white hover:shadow-xl transition-all duration-300"
+                  className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-gray-100"
                 >
                   {hasGifts ? (
-                    <div className="grid grid-cols-2 gap-2 mb-6">
+                    <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
                       {gifts.slice(0, 4).map((gift, i) => (
-                        <div key={i} className="aspect-square rounded-2xl bg-white overflow-hidden relative shadow-sm">
+                        <div key={i} className="relative overflow-hidden">
                           <ProductImage
                             src={gift.image_url}
                             alt={gift.title}
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover group-hover:scale-105 transition-transform duration-700"
                           />
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="aspect-square rounded-2xl bg-white overflow-hidden relative shadow-sm mb-6">
-                      <Image
-                        src={category.image}
-                        alt={category.label}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        unoptimized
-                      />
-                    </div>
+                    <Image
+                      src={category.image}
+                      alt={category.label}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      unoptimized
+                    />
                   )}
 
-                  <div>
-                    <div className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                  <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                    <div className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight">
                       {category.range}
                     </div>
-                    <div className="mt-2 text-sm text-foreground/40">
+                    <div className="mt-1 text-sm text-white/70 font-medium">
                       {category.label}
                     </div>
-                  </div>
-
-                  <div className="mt-5 flex items-center text-sm text-red font-medium">
-                    <span>Browse</span>
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
                   </div>
                 </Link>
               );
@@ -568,15 +501,15 @@ export default function Home() {
       </section>
 
       {/* ===== FEATURED GUIDES ===== */}
-      <section className="bg-gray-50">
-        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div>
-              <p className="text-gold font-medium text-sm uppercase tracking-widest mb-4">Earn While You Share</p>
+              <p className="text-gold font-medium text-sm uppercase tracking-[0.2em] mb-4">Earn While You Share</p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
                 Featured Guides
               </h2>
-              <p className="mt-5 text-lg md:text-xl text-foreground/40 max-w-lg">
+              <p className="mt-5 text-lg text-foreground/40 max-w-lg">
                 Parents earning by sharing what kids love
               </p>
             </div>
@@ -668,11 +601,11 @@ export default function Home() {
       </section>
 
       {/* ===== CURATED COLLECTIONS ===== */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
+      <section className="bg-[#FAFAF8]">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div>
-              <p className="text-red font-medium text-sm uppercase tracking-widest mb-4">Editor&apos;s Picks</p>
+              <p className="text-red font-medium text-sm uppercase tracking-[0.2em] mb-4">Editor&apos;s Picks</p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
                 Discover Guides
               </h2>
@@ -776,15 +709,15 @@ export default function Home() {
       </section>
 
       {/* ===== CATEGORIES ===== */}
-      <section className="bg-gray-50">
-        <div className="mx-auto max-w-6xl px-8 py-28 md:py-36">
+      <section className="bg-white border-t border-gray-100">
+        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Browse by Category
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
             {[
               { slug: "toys", label: "Toys & Games", icon: Gamepad2 },
               { slug: "clothing", label: "Clothing", icon: Shirt },
@@ -798,20 +731,14 @@ export default function Home() {
               <Link
                 key={cat.slug}
                 href={`/discover/category/${cat.slug}`}
-                className="group rounded-2xl bg-white p-8 md:p-10 text-center hover:shadow-xl transition-all duration-300"
+                className="group flex items-center gap-4 rounded-2xl bg-[#FAFAF8] p-5 md:p-6 hover:bg-white hover:shadow-lg transition-all duration-300"
               >
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red/10 flex items-center justify-center group-hover:bg-red/20 transition-colors">
-                  <cat.icon className="w-6 h-6 text-red" />
+                <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white flex items-center justify-center group-hover:bg-red/10 transition-colors shadow-sm">
+                  <cat.icon className="w-5 h-5 text-foreground/40 group-hover:text-red transition-colors" />
                 </div>
-                <h3 className="text-lg md:text-xl font-display font-bold text-foreground group-hover:text-red transition-colors">
+                <span className="text-base font-semibold text-foreground group-hover:text-red transition-colors">
                   {cat.label}
-                </h3>
-                <div className="mt-3 flex items-center justify-center text-sm text-foreground/30 group-hover:text-red transition-colors">
-                  <span>Shop</span>
-                  <svg className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
+                </span>
               </Link>
             ))}
           </div>
@@ -819,8 +746,8 @@ export default function Home() {
       </section>
 
       {/* ===== FAQ SECTION ===== */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-8 py-28 md:py-36">
+      <section className="bg-[#FAFAF8]">
+        <div className="mx-auto max-w-3xl px-8 py-32 md:py-40">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Questions? Answered.
@@ -832,48 +759,43 @@ export default function Home() {
       </section>
 
       {/* ===== BRAND DEFINITION MOMENT ===== */}
-      <section className="bg-gray-50">
-        <div className="mx-auto max-w-2xl px-8 py-32 md:py-44 text-center">
-          <div className="space-y-3">
-            <p
-              className="text-3xl md:text-4xl lg:text-5xl font-bold italic text-foreground"
-              style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
-            >
-              gid·dy
-            </p>
-            <p className="text-base md:text-lg text-foreground/40 font-light tracking-wide">
-              /ˈɡidē/
-            </p>
-          </div>
-          <p className="mt-8 text-lg md:text-xl text-foreground/60 leading-relaxed max-w-md mx-auto">
-            <span className="italic text-foreground/40">(noun)</span>{" "}
+      <section className="bg-white border-t border-gray-100">
+        <div className="mx-auto max-w-2xl px-8 py-36 md:py-48 text-center">
+          <p
+            className="text-4xl md:text-5xl lg:text-6xl font-bold italic text-foreground tracking-tight"
+            style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
+          >
+            gid·dy
+          </p>
+          <p className="mt-3 text-base text-foreground/30 font-light tracking-widest">
+            /ˈɡidē/
+          </p>
+          <p className="mt-10 text-xl md:text-2xl text-foreground/50 leading-relaxed max-w-lg mx-auto">
+            <span className="italic text-foreground/30">(noun)</span>{" "}
             that face they make when they tear open the wrapping paper and it&apos;s exactly what they wanted.
           </p>
         </div>
       </section>
 
       {/* ===== FINAL CTA ===== */}
-      <section className="bg-red text-white">
-        <div className="mx-auto max-w-4xl px-8 py-28 md:py-36 text-center">
-          <h2
-            className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[0.9]"
-            style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
-          >
+      <section className="bg-foreground text-white">
+        <div className="mx-auto max-w-4xl px-8 py-32 md:py-40 text-center">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white tracking-tight leading-[1.05]">
             Make them giddy.
           </h2>
-          <p className="mt-8 text-xl md:text-2xl text-white/70">
+          <p className="mt-8 text-xl md:text-2xl text-white/50 max-w-lg mx-auto">
             Create wishlists for free. Or build guides and earn.
           </p>
-          <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-5">
+          <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/login"
-              className="w-full sm:w-auto rounded-full bg-white px-12 py-5 text-lg font-semibold text-red hover:bg-gray-50 transition-all duration-200 hover:scale-[1.02] shadow-lg"
+              className="w-full sm:w-auto rounded-full bg-red px-12 py-5 text-lg font-semibold text-white hover:bg-red-hover transition-all duration-200"
             >
               Start Free
             </Link>
             <Link
               href="/dashboard/become-guide"
-              className="w-full sm:w-auto rounded-full border-2 border-gold bg-gold/20 px-12 py-5 text-lg font-semibold text-white hover:bg-gold/30 transition-all duration-200"
+              className="w-full sm:w-auto rounded-full border border-white/20 px-12 py-5 text-lg font-semibold text-white hover:bg-white/10 transition-all duration-200"
             >
               Create & Earn
             </Link>
