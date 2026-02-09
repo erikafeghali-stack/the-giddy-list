@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { AgeRange, CollectionCategory } from "@/lib/types";
+import EarningsCallout from "@/components/EarningsCallout";
 
 const AGE_RANGES: { value: AgeRange; label: string }[] = [
   { value: "0-2", label: "0-2 years" },
@@ -121,6 +122,8 @@ export default function NewCollectionPage() {
             </p>
           </div>
         </div>
+
+        <EarningsCallout className="mb-6" />
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="rounded-2xl bg-card border border-border p-5 shadow-sm space-y-4">

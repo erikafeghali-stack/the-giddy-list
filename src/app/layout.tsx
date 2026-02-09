@@ -41,35 +41,37 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "The Giddy List",
-  description: "Gifts that make them giddy.",
+  title: "Giddy List | Gifts that make them giddy",
+  description: "Create wishlists and registries for your kids, or curate gift guides and earn money. Gifts for kids 0-18.",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo-g-bow-red.png", type: "image/png", sizes: "192x192" },
     ],
     apple: [
       { url: "/apple-icon.svg", type: "image/svg+xml" },
+      { url: "/logo-g-bow-red.png", type: "image/png", sizes: "180x180" },
     ],
   },
   openGraph: {
-    title: "The Giddy List",
-    description: "Gifts that make them giddy.",
+    title: "Giddy List | Gifts that make them giddy",
+    description: "Create wishlists and registries for your kids, or curate gift guides and earn money. Gifts for kids 0-18.",
     url: "https://thegiddylist.com",
-    siteName: "The Giddy List",
+    siteName: "Giddy List",
     images: [
       {
         url: "https://thegiddylist.com/og-image.png",
         width: 1200,
         height: 630,
-        alt: "The Giddy List - Gifts that make them giddy.",
+        alt: "Giddy List - Gifts that make them giddy.",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Giddy List",
-    description: "Gifts that make them giddy.",
+    title: "Giddy List | Gifts that make them giddy",
+    description: "Create wishlists and registries for your kids, or curate gift guides and earn money. Gifts for kids 0-18.",
     images: ["https://thegiddylist.com/og-image.png"],
   },
 };

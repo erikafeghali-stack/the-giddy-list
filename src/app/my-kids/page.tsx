@@ -428,7 +428,7 @@ export default function KidsPage() {
             My Kids
           </h1>
           <p className="mt-2 text-lg text-foreground/50">
-            Store sizes and preferences so Giddy Lists + Shortlists are always correct
+            Store sizes and preferences so Giddy Wishlists + Registries are always correct
           </p>
 
           {/* Section Navigation - Tabs */}
@@ -449,7 +449,7 @@ export default function KidsPage() {
               href="/registry"
               className="px-5 py-3.5 text-sm font-medium border-b-2 border-transparent text-foreground/50 hover:text-foreground transition-colors"
             >
-              Giddy Shortlists
+              Giddy Registries
             </Link>
           </div>
         </div>

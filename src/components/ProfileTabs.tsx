@@ -38,7 +38,7 @@ export default function ProfileTabs({
 
   const tabs: { id: TabType; label: string; count: number; show: boolean }[] = [
     { id: "kids", label: "My Kids", count: kids.length, show: true },
-    { id: "lists", label: "Giddy Lists", count: kids.length, show: true },
+    { id: "lists", label: "Giddy Wishlists", count: kids.length, show: true },
     { id: "shortlists", label: "Shortlists", count: registries.length, show: true },
     { id: "guides", label: "Giddy Guides", count: collections.length, show: isGuide },
   ];
@@ -119,7 +119,7 @@ export default function ProfileTabs({
           </div>
         )}
 
-        {/* Giddy Lists Tab */}
+        {/* Giddy Wishlists Tab */}
         {activeTab === "lists" && (
           <div className="space-y-4">
             {kids.map((kid) => (
@@ -131,7 +131,7 @@ export default function ProfileTabs({
                 <div className="flex items-center gap-4">
                   <Avatar src={kid.avatar_url} name={kid.name} size="lg" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-foreground">{kid.name}'s Giddy List</div>
+                    <div className="font-semibold text-foreground">{kid.name}'s Giddy Wishlist</div>
                     <div className="text-sm text-foreground/50">
                       {kid.wishlists_count} items
                     </div>
@@ -155,7 +155,7 @@ export default function ProfileTabs({
 
             {kids.length === 0 && (
               <div className="text-center py-12 text-foreground/40">
-                No Giddy Lists to display
+                No Giddy Wishlists to display
               </div>
             )}
           </div>

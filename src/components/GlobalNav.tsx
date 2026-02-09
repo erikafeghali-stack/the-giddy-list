@@ -14,20 +14,23 @@ function NavDropdown({
   onToggle,
   children,
   dropdownRef,
+  icon,
 }: {
   label: string;
   isOpen: boolean;
   onToggle: () => void;
   children: React.ReactNode;
   dropdownRef: React.RefObject<HTMLDivElement | null>;
+  icon?: React.ReactNode;
 }) {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="flex items-center gap-1 px-4 py-2 rounded-lg text-base font-medium text-foreground/60 hover:text-foreground transition-all duration-150"
+        className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-base font-medium text-foreground/60 hover:text-foreground transition-all duration-150"
       >
         {label}
+        {icon}
         <svg
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           fill="none"
@@ -71,15 +74,6 @@ function DropdownItem({
   );
 }
 
-// Dropdown section header
-function DropdownHeader({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider">
-      {children}
-    </div>
-  );
-}
-
 // Dropdown divider
 function DropdownDivider() {
   return <div className="border-t border-gray-100 my-1" />;
@@ -96,23 +90,23 @@ export default function GlobalNav() {
   // Dropdown states
   const [discoverOpen, setDiscoverOpen] = useState(false);
   const [forParentsOpen, setForParentsOpen] = useState(false);
-  const [myKidsOpen, setMyKidsOpen] = useState(false);
-  const [myListsOpen, setMyListsOpen] = useState(false);
+  const [myFamilyOpen, setMyFamilyOpen] = useState(false);
+  const [createEarnOpen, setCreateEarnOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
   // Refs for click outside
   const discoverRef = useRef<HTMLDivElement>(null);
   const forParentsRef = useRef<HTMLDivElement>(null);
-  const myKidsRef = useRef<HTMLDivElement>(null);
-  const myListsRef = useRef<HTMLDivElement>(null);
+  const myFamilyRef = useRef<HTMLDivElement>(null);
+  const createEarnRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
   // Close all dropdowns
   const closeAllDropdowns = () => {
     setDiscoverOpen(false);
     setForParentsOpen(false);
-    setMyKidsOpen(false);
-    setMyListsOpen(false);
+    setMyFamilyOpen(false);
+    setCreateEarnOpen(false);
     setProfileOpen(false);
   };
 
@@ -186,11 +180,11 @@ export default function GlobalNav() {
       if (forParentsRef.current && !forParentsRef.current.contains(target)) {
         setForParentsOpen(false);
       }
-      if (myKidsRef.current && !myKidsRef.current.contains(target)) {
-        setMyKidsOpen(false);
+      if (myFamilyRef.current && !myFamilyRef.current.contains(target)) {
+        setMyFamilyOpen(false);
       }
-      if (myListsRef.current && !myListsRef.current.contains(target)) {
-        setMyListsOpen(false);
+      if (createEarnRef.current && !createEarnRef.current.contains(target)) {
+        setCreateEarnOpen(false);
       }
       if (profileRef.current && !profileRef.current.contains(target)) {
         setProfileOpen(false);
@@ -208,6 +202,13 @@ export default function GlobalNav() {
 
   // Don't show nav on login page
   if (pathname === "/login") return null;
+
+  // $ icon for Create & Earn
+  const dollarIcon = (
+    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-gold-light to-gold text-[10px] font-bold text-foreground">
+      $
+    </span>
+  );
 
   return (
     <>
@@ -230,73 +231,86 @@ export default function GlobalNav() {
 
       <nav className={`sticky top-0 z-50 bg-white/98 backdrop-blur-md transition-shadow duration-200 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          {/* Logo - clickable, navigates home and scrolls to top */}
+          {/* Logo - Wordmark Image */}
           <Link
             href="/"
             onClick={handleLogoClick}
-            className="text-2xl md:text-3xl font-black text-red tracking-tighter hover:opacity-80 transition-opacity duration-150"
-            style={{
-              fontFamily: "var(--font-fraunces), Georgia, serif",
-            }}
+            className="hover:opacity-80 transition-opacity duration-150"
           >
-            The Giddy List
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="The Giddy List"
+              className="h-10 md:h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {user ? (
               <>
+                {/* MY FAMILY Dropdown */}
+                <NavDropdown
+                  label="My Family"
+                  isOpen={myFamilyOpen}
+                  onToggle={() => {
+                    setMyFamilyOpen(!myFamilyOpen);
+                    setDiscoverOpen(false);
+                    setCreateEarnOpen(false);
+                  }}
+                  dropdownRef={myFamilyRef}
+                >
+                  <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>My Kids</DropdownItem>
+                  <DropdownDivider />
+                  <DropdownItem href="/my-kids" onClick={closeAllDropdowns}>Wishlists</DropdownItem>
+                  <DropdownItem href="/registry" onClick={closeAllDropdowns}>Registries</DropdownItem>
+                </NavDropdown>
+
+                {/* CREATE & EARN Dropdown (with $ icon) */}
+                <NavDropdown
+                  label="Create & Earn"
+                  isOpen={createEarnOpen}
+                  onToggle={() => {
+                    setCreateEarnOpen(!createEarnOpen);
+                    setDiscoverOpen(false);
+                    setMyFamilyOpen(false);
+                  }}
+                  dropdownRef={createEarnRef}
+                  icon={dollarIcon}
+                >
+                  <DropdownItem href="/collections" onClick={closeAllDropdowns}>My Guides</DropdownItem>
+                  <DropdownItem href={profile?.guide_enabled ? "/dashboard/earnings" : "/dashboard/become-guide"} onClick={closeAllDropdowns}>
+                    {profile?.guide_enabled ? "Earnings" : "Start Earning"}
+                  </DropdownItem>
+                  <DropdownDivider />
+                  <DropdownItem href="/collections/new" onClick={closeAllDropdowns}>
+                    <span className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                      </svg>
+                      Create Guide
+                    </span>
+                  </DropdownItem>
+                </NavDropdown>
+
                 {/* DISCOVER Dropdown (logged in) */}
                 <NavDropdown
                   label="Discover"
                   isOpen={discoverOpen}
                   onToggle={() => {
                     setDiscoverOpen(!discoverOpen);
-                    setMyKidsOpen(false);
-                    setMyListsOpen(false);
+                    setMyFamilyOpen(false);
+                    setCreateEarnOpen(false);
                   }}
                   dropdownRef={discoverRef}
                 >
-                  <DropdownHeader>By Age</DropdownHeader>
                   <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
                   <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
                   <DropdownItem href="/discover/age/kids" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
                   <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
                   <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
-                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
-                  <DropdownItem href="/discover/trending" onClick={closeAllDropdowns}>Trending Lists</DropdownItem>
-                </NavDropdown>
-
-                {/* MY KIDS Dropdown */}
-                <NavDropdown
-                  label="My Kids"
-                  isOpen={myKidsOpen}
-                  onToggle={() => {
-                    setMyKidsOpen(!myKidsOpen);
-                    setDiscoverOpen(false);
-                    setMyListsOpen(false);
-                  }}
-                  dropdownRef={myKidsRef}
-                >
-                  <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>View All Kids</DropdownItem>
-                  <DropdownItem href="/dashboard?add=true" onClick={closeAllDropdowns}>Add a Kid</DropdownItem>
-                </NavDropdown>
-
-                {/* MY LISTS Dropdown */}
-                <NavDropdown
-                  label="My Lists"
-                  isOpen={myListsOpen}
-                  onToggle={() => {
-                    setMyListsOpen(!myListsOpen);
-                    setDiscoverOpen(false);
-                    setMyKidsOpen(false);
-                  }}
-                  dropdownRef={myListsRef}
-                >
-                  <DropdownItem href="/dashboard" onClick={closeAllDropdowns}>Giddy Lists</DropdownItem>
-                  <DropdownItem href="/registry" onClick={closeAllDropdowns}>Giddy Shortlists</DropdownItem>
-                  <DropdownItem href="/collections" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
+                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Browse Guides</DropdownItem>
                 </NavDropdown>
               </>
             ) : (
@@ -311,15 +325,13 @@ export default function GlobalNav() {
                   }}
                   dropdownRef={discoverRef}
                 >
-                  <DropdownHeader>By Age</DropdownHeader>
                   <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
                   <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
                   <DropdownItem href="/discover/age/kids" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
                   <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
                   <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
-                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Giddy Guides</DropdownItem>
-                  <DropdownItem href="/discover/trending" onClick={closeAllDropdowns}>Trending Lists</DropdownItem>
+                  <DropdownItem href="/guides" onClick={closeAllDropdowns}>Browse Guides</DropdownItem>
                 </NavDropdown>
 
                 {/* FOR PARENTS Dropdown */}
@@ -333,19 +345,18 @@ export default function GlobalNav() {
                   dropdownRef={forParentsRef}
                 >
                   <DropdownItem href="/#how-it-works" onClick={closeAllDropdowns}>How It Works</DropdownItem>
-                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Giddy List</DropdownItem>
-                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Giddy Shortlist</DropdownItem>
+                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Wishlist</DropdownItem>
+                  <DropdownItem href="/login" onClick={closeAllDropdowns}>Create a Registry</DropdownItem>
                   <DropdownDivider />
                   <DropdownItem href="/dashboard/become-guide" onClick={closeAllDropdowns}>
                     <span className="flex items-center gap-2">
                       <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
                       </svg>
-                      Become a Giddy Guide
+                      Create & Earn
                     </span>
                   </DropdownItem>
-                  <DropdownDivider />
-                  <DropdownItem href="/extension" onClick={closeAllDropdowns}>Download Extension</DropdownItem>
                 </NavDropdown>
               </>
             )}
@@ -357,26 +368,14 @@ export default function GlobalNav() {
               <div className="w-8 h-8 rounded-full bg-gray-100 animate-pulse" />
             ) : user ? (
               <>
-                {/* Show "Earn Money" CTA for non-guides */}
-                {!profile?.guide_enabled && (
-                  <Link
-                    href="/dashboard/become-guide"
-                    className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-gradient-to-r from-gold-light to-red-light text-xs md:text-sm font-medium text-foreground hover:shadow-md transition-all duration-150"
-                  >
-                    <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    Earn Money
-                  </Link>
-                )}
                 {/* Profile/Avatar Dropdown */}
                 <div className="relative" ref={profileRef}>
                   <button
                     onClick={() => {
                       setProfileOpen(!profileOpen);
                       setDiscoverOpen(false);
-                      setMyKidsOpen(false);
-                      setMyListsOpen(false);
+                      setMyFamilyOpen(false);
+                      setCreateEarnOpen(false);
                     }}
                     className="flex items-center gap-2 rounded-full p-1 hover:bg-gray-100 transition-all duration-150"
                   >
@@ -414,27 +413,6 @@ export default function GlobalNav() {
                       >
                         Account Settings
                       </Link>
-                      <Link
-                        href={profile?.guide_enabled ? "/dashboard/earnings" : "/dashboard/become-guide"}
-                        className="block px-4 py-2.5 text-sm text-foreground/70 hover:bg-gray-50 hover:text-red transition-colors"
-                        onClick={closeAllDropdowns}
-                      >
-                        {profile?.guide_enabled ? (
-                          <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            Earnings
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            Become a Guide
-                          </span>
-                        )}
-                      </Link>
                       <DropdownDivider />
                       <button
                         onClick={() => {
@@ -453,12 +431,13 @@ export default function GlobalNav() {
               <>
                 <Link
                   href="/dashboard/become-guide"
-                  className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-gradient-to-r from-gold-light to-red-light text-xs md:text-sm font-medium text-foreground hover:shadow-md transition-all duration-150"
+                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-gold-light to-gold text-sm font-medium text-foreground hover:shadow-md transition-all duration-150"
                 >
-                  <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
                   </svg>
-                  Earn Money
+                  Create & Earn
                 </Link>
                 <Link
                   href="/login"
@@ -470,7 +449,7 @@ export default function GlobalNav() {
                   href="/login"
                   className="rounded-full bg-red px-6 py-2.5 text-base font-medium text-white hover:opacity-90 transition-all duration-150"
                 >
-                  Get Started
+                  Start Free
                 </Link>
               </>
             )}

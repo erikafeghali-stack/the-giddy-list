@@ -328,11 +328,11 @@ export default function PublicProfilePage({
           </section>
         )}
 
-        {/* Giddy Shortlists Section */}
+        {/* Giddy Registries Section */}
         {profile.registries.length > 0 && (
           <section className="mt-10 pb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-foreground">Giddy Shortlists</h2>
+              <h2 className="text-lg font-bold text-foreground">Giddy Registries</h2>
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {profile.registries.map((registry) => (

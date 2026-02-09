@@ -185,6 +185,9 @@ export interface Kid {
   kid_preferences: KidPreferences | null;
 }
 
+// User intent for onboarding
+export type UserIntent = 'family' | 'earn' | 'both';
+
 // Creator Profile types
 export interface CreatorProfile {
   id: string;
@@ -195,6 +198,8 @@ export interface CreatorProfile {
   cover_image_url: string | null;
   is_public: boolean;
   total_followers: number;
+  onboarding_completed: boolean;
+  user_intent: UserIntent | null;
   created_at: string;
   updated_at: string;
 }

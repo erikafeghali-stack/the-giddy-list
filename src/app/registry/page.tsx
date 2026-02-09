@@ -80,7 +80,7 @@ export default function RegistriesPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                My Giddy Shortlists
+                My Giddy Registries
               </h1>
               <p className="mt-1 text-foreground/50">
                 Shareable shortlists for birthdays, holidays, and special occasions
@@ -112,7 +112,7 @@ export default function RegistriesPage() {
               href="/registry"
               className="px-4 py-3 text-sm font-medium border-b-2 border-red text-red"
             >
-              Giddy Shortlists
+              Giddy Registries
             </Link>
           </div>
         </div>

@@ -172,7 +172,7 @@ export default function SettingsPage() {
               <div className="flex-1">
                 <div className="font-medium text-foreground">My Kids</div>
                 <div className="text-sm text-foreground/60">
-                  Manage kids, sizes, preferences, and Giddy Lists
+                  Manage kids, sizes, preferences, and Giddy Wishlists
                 </div>
               </div>
               <svg
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                 </svg>
               </div>
               <div className="flex-1">
-                <div className="font-medium text-foreground">Giddy Shortlists</div>
+                <div className="font-medium text-foreground">Giddy Registries</div>
                 <div className="text-sm text-foreground/60">
                   Manage your gift shortlists for events
                 </div>

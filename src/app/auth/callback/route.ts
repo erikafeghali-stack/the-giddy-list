@@ -41,7 +41,19 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=auth_failed", url.origin));
   }
 
-  console.log("Success, redirecting to /dashboard");
+  // Check if user has completed onboarding
+  const { data: profile } = await supabase
+    .from("creator_profiles")
+    .select("onboarding_completed")
+    .eq("id", data.session.user.id)
+    .single();
 
+  // If profile doesn't exist or onboarding not completed, redirect to onboarding
+  if (!profile || !profile.onboarding_completed) {
+    console.log("New user or onboarding not completed, redirecting to /onboarding");
+    return NextResponse.redirect(new URL("/onboarding", url.origin));
+  }
+
+  console.log("Returning user, redirecting to /dashboard");
   return NextResponse.redirect(new URL("/dashboard", url.origin));
 }

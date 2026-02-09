@@ -180,7 +180,7 @@ export default function DashboardPage() {
                 Welcome back{profile?.display_name ? `, ${profile.display_name.split(" ")[0]}` : ""}!
               </h1>
               <p className="mt-2 text-lg text-foreground/50">
-                Manage your kids, Giddy Lists, and Shortlists
+                Manage your kids, Giddy Wishlists, and Registries
               </p>
             </div>
             <button
@@ -292,7 +292,7 @@ export default function DashboardPage() {
           {/* MY GIDDY LISTS Section */}
           <section className="rounded-3xl bg-gray-50 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Lists</h2>
+              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Wishlists</h2>
               <Link href="/my-kids" className="text-sm text-red hover:text-red-hover transition-colors">
                 View All
               </Link>
@@ -329,7 +329,7 @@ export default function DashboardPage() {
           {/* MY SHORTLISTS Section */}
           <section className="rounded-3xl bg-gray-50 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Shortlists</h2>
+              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Registries</h2>
               <Link href="/registry" className="text-sm text-red hover:text-red-hover transition-colors">
                 View All
               </Link>

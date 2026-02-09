@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Collection } from "@/lib/types";
+import EarningsCallout from "@/components/EarningsCallout";
 
 export default function CollectionsPage() {
   const router = useRouter();
@@ -84,13 +85,14 @@ export default function CollectionsPage() {
               href="/registry"
               className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/60 hover:text-foreground transition-colors"
             >
-              Giddy Shortlists
+              Giddy Registries
             </Link>
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-4xl px-6 py-8">
+        <EarningsCallout className="mb-6" />
 
         {collections.length === 0 ? (
           <div className="rounded-2xl bg-white p-12 text-center">
