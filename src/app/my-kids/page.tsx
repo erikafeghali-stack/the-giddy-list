@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { Suspense, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -138,7 +138,7 @@ function buildUnderneath(mode: UnderneathMode, size: string): string | null {
   return null;
 }
 
-export default function KidsPage() {
+function KidsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -556,6 +556,20 @@ export default function KidsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function KidsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-white pb-20 md:pb-0 flex items-center justify-center">
+          <div className="inline-block w-8 h-8 border-2 border-red/20 border-t-red rounded-full animate-spin" />
+        </main>
+      }
+    >
+      <KidsPageContent />
+    </Suspense>
   );
 }
 
