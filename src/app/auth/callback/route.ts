@@ -41,16 +41,50 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=auth_failed", url.origin));
   }
 
-  // Check if user has completed onboarding
+  const userId = data.session.user.id;
+
+  // Ensure creator_profiles row exists (needed for list URLs /list/username/kidname and onboarding)
+  const { data: existingProfile } = await supabase
+    .from("creator_profiles")
+    .select("id, onboarding_completed")
+    .eq("id", userId)
+    .single();
+
+  if (!existingProfile) {
+    // Create default profile with unique username so /list/username/kidname works
+    const baseUsername = "user-" + userId.replace(/-/g, "").slice(0, 12);
+    const displayName =
+      data.session.user.user_metadata?.full_name ??
+      data.session.user.email?.split("@")[0] ??
+      "User";
+    const { error: insertError } = await supabase.from("creator_profiles").insert({
+      id: userId,
+      username: baseUsername,
+      display_name: displayName,
+      is_public: true,
+    });
+    if (insertError?.code === "23505") {
+      // Unique violation: username taken, retry with suffix
+      const fallbackUsername = baseUsername + "-" + Math.random().toString(36).slice(2, 8);
+      await supabase.from("creator_profiles").insert({
+        id: userId,
+        username: fallbackUsername,
+        display_name: displayName,
+        is_public: true,
+      });
+    }
+  }
+
+  // Check if user has completed onboarding (re-fetch in case we just created profile)
   const { data: profile } = await supabase
     .from("creator_profiles")
     .select("onboarding_completed")
-    .eq("id", data.session.user.id)
+    .eq("id", userId)
     .single();
 
-  // If profile doesn't exist or onboarding not completed, redirect to onboarding
-  if (!profile || !profile.onboarding_completed) {
-    console.log("New user or onboarding not completed, redirecting to /onboarding");
+  // If onboarding not completed, redirect to onboarding
+  if (!profile?.onboarding_completed) {
+    console.log("Onboarding not completed, redirecting to /onboarding");
     return NextResponse.redirect(new URL("/onboarding", url.origin));
   }
 

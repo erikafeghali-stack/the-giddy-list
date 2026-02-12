@@ -115,9 +115,13 @@ input::placeholder, textarea::placeholder {
   display: none;
 }
 
-/* Smooth transitions for all interactive elements - ShopMy style */
-button, a {
+/* Smooth transitions and cursor for interactive elements */
+button, [role="button"], a[href] {
   transition: all 0.15s ease-in-out;
+}
+
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
 }
 
 /* Smoother image transitions */

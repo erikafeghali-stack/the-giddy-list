@@ -17,12 +17,6 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // /my-kids -> /dashboard
-      {
-        source: '/my-kids',
-        destination: '/dashboard',
-        permanent: true,
-      },
       // /r/:slug (short registry URL) -> /s/:slug (short shortlist URL)
       {
         source: '/r/:slug',

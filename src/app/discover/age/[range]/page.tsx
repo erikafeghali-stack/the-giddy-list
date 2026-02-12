@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Collection, CreatorProfile, AgeRange, TrendingGift } from "@/lib/types";
 import Avatar from "@/components/Avatar";
@@ -13,12 +13,21 @@ interface CollectionWithCreator extends Collection {
   creator_profiles: CreatorProfile;
 }
 
-const AGE_LABELS: Record<string, string> = {
-  "0-2": "0-2 Years",
-  "3-5": "3-5 Years",
-  "6-8": "6-8 Years",
-  "9-12": "9-12 Years",
-  "13-18": "13-18 Years",
+const AGE_INFO: Record<string, { label: string; description: string }> = {
+  "0-2": { label: "Baby & Toddler", description: "First toys, teethers, nursery essentials, and developmental gifts for little ones." },
+  "3-5": { label: "Preschool", description: "Creative play, learning toys, and imaginative gifts for curious preschoolers." },
+  "6-8": { label: "Early Elementary", description: "Building sets, books, art supplies, and hands-on gifts for growing minds." },
+  "9-12": { label: "Tweens", description: "STEM kits, tech, hobbies, and exciting gifts for kids finding their passions." },
+  "13-18": { label: "Teens", description: "Fashion, electronics, experiences, and trending gifts for teenagers." },
+};
+
+// Map legacy nav slugs to age ranges so /discover/age/babies etc work
+const AGE_SLUG_TO_RANGE: Record<string, string> = {
+  babies: "0-2",
+  toddlers: "3-5",
+  kids: "6-8",
+  tweens: "9-12",
+  teens: "13-18",
 };
 
 export default function DiscoverByAgePage({
@@ -27,25 +36,35 @@ export default function DiscoverByAgePage({
   params: Promise<{ range: string }>;
 }) {
   const { range } = use(params);
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [collections, setCollections] = useState<CollectionWithCreator[]>([]);
   const [trendingGifts, setTrendingGifts] = useState<TrendingGift[]>([]);
+
+  const canonicalRange = AGE_SLUG_TO_RANGE[range] ?? range;
+
+  // Redirect legacy slugs (babies, toddlers, etc.) to canonical ranges (0-2, 3-5, etc.)
+  useEffect(() => {
+    if (canonicalRange !== range) {
+      router.replace(`/discover/age/${canonicalRange}`);
+    }
+  }, [range, canonicalRange, router]);
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
 
-      // Load collections
+      // Load collections (use canonical range for API/DB)
       const { data } = await supabase
         .from("collections")
         .select("*, creator_profiles(*)")
         .eq("is_public", true)
-        .eq("age_range", range)
+        .eq("age_range", canonicalRange)
         .order("view_count", { ascending: false });
 
       // Load trending gifts for this age range
       try {
-        const res = await fetch(`/api/trending-gifts?age_range=${range}&limit=12`);
+        const res = await fetch(`/api/trending-gifts?age_range=${canonicalRange}&limit=12`);
         const giftsData = await res.json();
         if (giftsData.success && giftsData.data) {
           setTrendingGifts(giftsData.data);
@@ -59,53 +78,73 @@ export default function DiscoverByAgePage({
     }
 
     loadData();
-  }, [range]);
+  }, [canonicalRange]);
 
-  const ageLabel = AGE_LABELS[range] || range;
+  const info = AGE_INFO[canonicalRange] || { label: canonicalRange, description: "" };
+
+  if (canonicalRange !== range) {
+    return (
+      <main className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="inline-block w-8 h-8 border-2 border-red/20 border-t-red rounded-full animate-spin" />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-cream pb-20 md:pb-0">
-      <div className="mx-auto max-w-6xl px-6 py-6">
-        {/* Header */}
-        <div className="mb-6">
+      {/* Hero header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="mx-auto max-w-6xl px-6 pt-8 pb-6">
           <Link
-            href="/discover"
-            className="inline-flex items-center text-sm text-foreground/60 hover:text-red transition-colors mb-2"
+            href="/"
+            className="inline-flex items-center text-sm text-foreground/50 hover:text-red transition-colors mb-4"
           >
-            &larr; Back to Discover
+            &larr; Back to Home
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">
-            Gift Guides for Ages {ageLabel}
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+            Gifts for Ages {range}
           </h1>
-          <p className="mt-1 text-sm text-foreground/60">
-            {collections.length} collections found
+          <p className="mt-1 text-sm text-foreground/50">{info.label}</p>
+          <p className="mt-3 text-foreground/60 max-w-xl">
+            {info.description}
           </p>
+
+          {/* Age filter pills */}
+          <div className="mt-6">
+            <AgeFilter
+              value={range as AgeRange}
+              showAll={false}
+              onChange={(value) => {
+                if (value) {
+                  router.push(`/discover/age/${value}`);
+                }
+              }}
+            />
+          </div>
         </div>
+      </div>
 
-        {/* Age Filter */}
-        <AgeFilter
-          value={range as AgeRange}
-          onChange={(value) => {
-            if (value) {
-              window.location.href = `/discover/age/${value}`;
-            } else {
-              window.location.href = "/discover";
-            }
-          }}
-        />
-
+      <div className="mx-auto max-w-6xl px-6 py-8">
         {loading ? (
-          <div className="mt-8 text-sm text-foreground/50">Loading...</div>
+          /* Loading skeleton */
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="rounded-2xl bg-white border border-gray-100 overflow-hidden">
+                <div className="aspect-square bg-gray-100 animate-pulse" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-gray-100 rounded animate-pulse" />
+                  <div className="h-4 bg-gray-100 rounded w-2/3 animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
           <>
             {/* Trending Gifts Section */}
             {trendingGifts.length > 0 && (
-              <div className="mt-8">
-                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <svg className="w-6 h-6 text-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  Trending Gifts for Ages {ageLabel}
+              <div>
+                <h2 className="text-xl font-bold text-foreground mb-5">
+                  Popular Gift Ideas
                 </h2>
                 <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {trendingGifts.map((gift) => (
@@ -114,21 +153,21 @@ export default function DiscoverByAgePage({
                       href={gift.affiliate_url || gift.product_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group rounded-2xl bg-card border border-border overflow-hidden shadow-sm hover:shadow-md hover:border-red/30 transition-all"
+                      className="group rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-md hover:border-red/20 transition-all"
                     >
                       <div className="relative aspect-square bg-white">
                         <ProductImage
                           src={gift.image_url}
                           alt={gift.title}
-                          className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                          className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
                         />
                         {gift.trending_score && gift.trending_score >= 90 && (
-                          <div className="absolute top-2 left-2 bg-red text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                            Hot
+                          <div className="absolute top-2 left-2 bg-red text-white text-xs font-bold px-2 py-0.5 rounded-full z-10">
+                            Popular
                           </div>
                         )}
                       </div>
-                      <div className="p-3">
+                      <div className="p-3 border-t border-gray-50">
                         <h3 className="font-medium text-foreground text-sm line-clamp-2 group-hover:text-red transition-colors">
                           {gift.title}
                         </h3>
@@ -138,11 +177,11 @@ export default function DiscoverByAgePage({
                           </div>
                         )}
                         <div className="mt-2 flex items-center justify-between text-xs">
-                          <span className="text-foreground/50 capitalize">
+                          <span className="text-foreground/40 capitalize">
                             {gift.retailer || "Shop"}
                           </span>
                           <span className="text-red font-medium group-hover:underline">
-                            View →
+                            View &rarr;
                           </span>
                         </div>
                       </div>
@@ -153,44 +192,24 @@ export default function DiscoverByAgePage({
             )}
 
             {/* Collections Section */}
-            <div className="mt-10">
-              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <svg className="w-6 h-6 text-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                Curated Collections
-              </h2>
-              {collections.length === 0 ? (
-                <div className="rounded-2xl bg-card border border-border p-8 text-center shadow-sm">
-                  <div className="text-lg font-semibold text-foreground">
-                    No collections for this age range yet
-                  </div>
-                  <p className="mt-2 text-sm text-foreground/60">
-                    Be the first to create a gift guide for ages {ageLabel}!
-                  </p>
-                  <Link
-                    href="/collections/new"
-                    className="mt-4 inline-block rounded-xl bg-red px-5 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
-                  >
-                    Create Collection
-                  </Link>
-                </div>
-              ) : (
+            {collections.length > 0 && (
+              <div className={trendingGifts.length > 0 ? "mt-12" : ""}>
+                <h2 className="text-xl font-bold text-foreground mb-5">
+                  Curated Collections
+                </h2>
                 <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {collections.map((collection) => (
                     <Link
                       key={collection.id}
                       href={`/collections/${collection.slug}`}
-                      className="group rounded-2xl bg-card border border-border overflow-hidden shadow-sm hover:shadow-md transition-all"
+                      className="group rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all"
                     >
-                      <div className="relative aspect-[4/3] bg-cream-dark">
+                      <div className="relative aspect-[4/3] bg-gray-50">
                         {collection.cover_image_url && (
-                          <Image
+                          <ProductImage
                             src={collection.cover_image_url}
                             alt={collection.title}
-                            fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            unoptimized
                           />
                         )}
                       </div>
@@ -204,7 +223,7 @@ export default function DiscoverByAgePage({
                             name={collection.creator_profiles?.display_name}
                             size="xs"
                           />
-                          <span className="text-xs text-foreground/60 truncate">
+                          <span className="text-xs text-foreground/50 truncate">
                             {collection.creator_profiles?.display_name ||
                               collection.creator_profiles?.username}
                           </span>
@@ -213,8 +232,44 @@ export default function DiscoverByAgePage({
                     </Link>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* Empty state - only if no gifts AND no collections */}
+            {trendingGifts.length === 0 && collections.length === 0 && (
+              <div className="rounded-2xl bg-white border border-gray-100 p-12 text-center shadow-sm">
+                <div className="text-lg font-semibold text-foreground">
+                  No gift ideas for this age range yet
+                </div>
+                <p className="mt-2 text-sm text-foreground/50">
+                  Check back soon! We&apos;re adding new products all the time.
+                </p>
+                <Link
+                  href="/"
+                  className="mt-6 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
+                >
+                  Back to Home
+                </Link>
+              </div>
+            )}
+
+            {/* CTA for creating wishlists */}
+            {trendingGifts.length > 0 && (
+              <div className="mt-12 rounded-2xl bg-gradient-to-r from-red/5 to-gold/5 border border-red/10 p-8 text-center">
+                <h3 className="text-lg font-bold text-foreground">
+                  Found something they&apos;ll love?
+                </h3>
+                <p className="mt-2 text-sm text-foreground/50">
+                  Create a free wishlist to save gifts and share with family.
+                </p>
+                <Link
+                  href="/login"
+                  className="mt-4 inline-block rounded-full bg-red px-6 py-3 text-sm font-medium text-white hover:bg-red-hover transition-colors"
+                >
+                  Start Your Wishlist
+                </Link>
+              </div>
+            )}
           </>
         )}
       </div>

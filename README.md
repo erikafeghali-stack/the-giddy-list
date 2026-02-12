@@ -16,6 +16,15 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Database migrations (Supabase)
+
+To support kid list URLs and onboarding, run the migrations in `supabase/migrations/` in order. The latest migration (`005_kids_slug_and_creator_profile_onboarding.sql`) adds:
+
+- **kids.slug** – used for shareable list URLs (`/list/username/kidname`)
+- **creator_profiles.onboarding_completed** and **user_intent** – used after login
+
+If you use the Supabase CLI: `supabase db push`. Otherwise, run each migration file in the Supabase SQL Editor.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

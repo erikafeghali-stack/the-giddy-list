@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { WishlistItem, WishlistStatus, ScrapedProduct } from "@/lib/types";
@@ -140,6 +140,7 @@ function buildUnderneath(mode: UnderneathMode, size: string): string | null {
 
 export default function KidsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -225,7 +226,13 @@ export default function KidsPage() {
     });
 
     setKids(normalized);
-    setSelectedKidId(normalized[0]?.id ?? null);
+    // Respect ?kid= URL param from dashboard links (e.g. /my-kids?kid=uuid)
+    const kidParam = searchParams.get("kid");
+    const initialSelection =
+      kidParam && normalized.some((k) => k.id === kidParam)
+        ? kidParam
+        : normalized[0]?.id ?? null;
+    setSelectedKidId(initialSelection);
     setLoading(false);
   }
 
@@ -233,6 +240,14 @@ export default function KidsPage() {
     loadKids();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // When URL ?kid= changes (e.g. user clicked a different kid on dashboard), select that kid
+  useEffect(() => {
+    const kidParam = searchParams.get("kid");
+    if (kidParam && kids.some((k) => k.id === kidParam)) {
+      setSelectedKidId(kidParam);
+    }
+  }, [searchParams, kids]);
 
   async function addKid() {
     setError(null);
@@ -244,10 +259,11 @@ export default function KidsPage() {
     if (!userId) return;
 
     const birthdate = newBirthdate ? newBirthdate : null;
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `kid-${Date.now()}`;
 
     const { data: kidRow, error: kidErr } = await supabase
       .from("kids")
-      .insert({ user_id: userId, name, birthdate })
+      .insert({ user_id: userId, name, birthdate, slug })
       .select("id, name, birthdate")
       .single();
 

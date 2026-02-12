@@ -322,11 +322,11 @@ export default function GlobalNav() {
                   dropdownRef={discoverRef}
                   transparent={isTransparent}
                 >
-                  <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
-                  <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
-                  <DropdownItem href="/discover/age/kids" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
-                  <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
-                  <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
+                  <DropdownItem href="/discover/age/0-2" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
+                  <DropdownItem href="/discover/age/3-5" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
+                  <DropdownItem href="/discover/age/6-8" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
+                  <DropdownItem href="/discover/age/9-12" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
+                  <DropdownItem href="/discover/age/13-18" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
                   <DropdownItem href="/guides" onClick={closeAllDropdowns}>Browse Guides</DropdownItem>
                 </NavDropdown>
@@ -344,11 +344,11 @@ export default function GlobalNav() {
                   dropdownRef={discoverRef}
                   transparent={isTransparent}
                 >
-                  <DropdownItem href="/discover/age/babies" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
-                  <DropdownItem href="/discover/age/toddlers" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
-                  <DropdownItem href="/discover/age/kids" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
-                  <DropdownItem href="/discover/age/tweens" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
-                  <DropdownItem href="/discover/age/teens" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
+                  <DropdownItem href="/discover/age/0-2" onClick={closeAllDropdowns}>Babies (0-2)</DropdownItem>
+                  <DropdownItem href="/discover/age/3-5" onClick={closeAllDropdowns}>Toddlers (3-5)</DropdownItem>
+                  <DropdownItem href="/discover/age/6-8" onClick={closeAllDropdowns}>Kids (6-8)</DropdownItem>
+                  <DropdownItem href="/discover/age/9-12" onClick={closeAllDropdowns}>Tweens (9-12)</DropdownItem>
+                  <DropdownItem href="/discover/age/13-18" onClick={closeAllDropdowns}>Teens (13-18)</DropdownItem>
                   <DropdownDivider />
                   <DropdownItem href="/guides" onClick={closeAllDropdowns}>Browse Guides</DropdownItem>
                 </NavDropdown>

@@ -235,28 +235,28 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* MY KIDS Section */}
-        <section className="mb-12">
+        {/* MY KIDS Section - kid cards are real links so they always navigate */}
+        <section className="mb-12 relative z-10">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-display font-bold text-foreground">My Kids</h2>
           </div>
 
           <div className="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2">
             {kids.map((kid) => (
-              <Link
+              <a
                 key={kid.id}
-                href={`/my-kids?kid=${kid.id}`}
-                className="flex-shrink-0 w-32 text-center group"
+                href={`/my-kids?kid=${encodeURIComponent(kid.id)}`}
+                className="flex-shrink-0 w-32 text-center group block cursor-pointer no-underline text-inherit relative z-10"
               >
                 <div className="relative">
                   <Avatar
                     src={kid.avatar_url}
                     name={kid.name}
                     size="xl"
-                    className="mx-auto w-20 h-20 ring-4 ring-white shadow-lg group-hover:ring-red/20 transition-all"
+                    className="mx-auto w-20 h-20 ring-4 ring-white shadow-lg group-hover:ring-red/20 transition-all pointer-events-none"
                   />
                   {kid.wishlists.length > 0 && (
-                    <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red text-white text-xs font-bold flex items-center justify-center">
+                    <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red text-white text-xs font-bold flex items-center justify-center pointer-events-none">
                       {kid.wishlists.length}
                     </span>
                   )}
@@ -267,7 +267,7 @@ export default function DashboardPage() {
                 <div className="text-xs text-foreground/40">
                   {kid.wishlists.length} items
                 </div>
-              </Link>
+              </a>
             ))}
 
             {/* Add Kid Card */}
@@ -299,24 +299,37 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-3">
-              {kids.map((kid) => (
-                <Link
-                  key={kid.id}
-                  href={`/my-kids?kid=${kid.id}`}
-                  className="block rounded-2xl bg-white p-4 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar src={kid.avatar_url} name={kid.name} size="sm" />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-foreground truncate">{kid.name}'s List</div>
-                      <div className="text-sm text-foreground/50">{kid.wishlists.length} items</div>
-                    </div>
-                    <svg className="w-5 h-5 text-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+              {kids.map((kid) => {
+                const listHref = profile?.username
+                  ? `/list/${profile.username}/${kid.slug || kid.id}`
+                  : `/my-kids?kid=${kid.id}`;
+                return (
+                  <div key={kid.id} className="rounded-2xl bg-white p-4 hover:shadow-md transition-shadow">
+                    <Link href={`/my-kids?kid=${kid.id}`} className="flex items-center gap-3">
+                      <Avatar src={kid.avatar_url} name={kid.name} size="sm" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-foreground truncate">{kid.name}'s List</div>
+                        <div className="text-sm text-foreground/50">{kid.wishlists.length} items</div>
+                      </div>
+                      <svg className="w-5 h-5 text-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                    {profile?.username && (
+                      <div className="mt-2 pt-2 border-t border-gray-100">
+                        <a
+                          href={listHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-red hover:text-red-hover transition-colors"
+                        >
+                          View shareable list →
+                        </a>
+                      </div>
+                    )}
                   </div>
-                </Link>
-              ))}
+                );
+              })}
 
               {kids.length === 0 && (
                 <div className="text-center py-8 text-foreground/40">
