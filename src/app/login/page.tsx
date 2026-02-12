@@ -53,33 +53,24 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-md px-8 py-20 md:py-32">
-        {/* Logo/Brand */}
-        <div className="text-center mb-12">
-          <Link href="/">
-            <h1
-              className="text-5xl md:text-6xl font-black text-red tracking-tighter"
-              style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
-            >
+    <main className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-block">
+            <h1 className="heading-xl text-red" style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}>
               The Giddy List
             </h1>
           </Link>
-          <p className="mt-4 text-lg text-foreground/50">
-            Wishlists & registries for your little ones
-          </p>
+          <p className="mt-3 subheading">Wishlists & registries for your little ones</p>
         </div>
 
-        {/* Login Card */}
-        <div className="rounded-3xl bg-white border border-gray-200 p-10 shadow-sm">
-          <h2 className="text-2xl font-display font-bold text-foreground">Welcome back</h2>
-          <p className="mt-2 text-foreground/50">
-            We'll email you a magic link. No password needed.
-          </p>
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+          <h2 className="heading-md">Welcome back</h2>
+          <p className="mt-1 text-sm text-foreground/60">We’ll email you a magic link. No password needed.</p>
 
           <input
             type="email"
-            className="mt-8 w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-foreground placeholder:text-foreground/40 focus:bg-white focus:border-red/30 focus:ring-2 focus:ring-red/10 transition-all"
+            className="input-premium mt-5"
             placeholder="you@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -88,23 +79,21 @@ export default function LoginPage() {
           />
 
           <button
-            className="mt-5 w-full rounded-2xl bg-red px-6 py-4 text-lg font-semibold text-white transition-all duration-200 hover:bg-red-hover hover:shadow-lg hover:shadow-red/20 disabled:opacity-50 disabled:hover:shadow-none"
+            className="btn-primary w-full mt-4 disabled:opacity-50"
             onClick={sendMagicLink}
             disabled={!email || loading}
           >
             {loading ? "Sending..." : "Send magic link"}
           </button>
 
-          {/* Divider */}
-          <div className="mt-6 flex items-center gap-4">
-            <div className="h-px flex-1 bg-gray-200"></div>
-            <span className="text-sm text-foreground/40">or</span>
-            <div className="h-px flex-1 bg-gray-200"></div>
+          <div className="mt-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs text-foreground/40">or</span>
+            <div className="h-px flex-1 bg-gray-200" />
           </div>
 
-          {/* Google Sign In */}
           <button
-            className="mt-6 w-full rounded-2xl border border-gray-200 bg-white px-6 py-4 text-lg font-semibold text-foreground transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 flex items-center justify-center gap-3"
+            className="mt-5 w-full btn-secondary flex items-center justify-center gap-2.5"
             onClick={signInWithGoogle}
             disabled={googleLoading}
           >
@@ -118,43 +107,31 @@ export default function LoginPage() {
           </button>
 
           {sent && (
-            <div className="mt-6 rounded-2xl bg-green-50 border border-green-200 p-5">
-              <div className="flex items-start gap-4">
-                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-green-900">Check your email</p>
-                  <p className="mt-1 text-sm text-green-700">
-                    Click the link we sent to log in.
-                  </p>
-                </div>
+            <div className="mt-5 rounded-xl bg-green-50 border border-green-200 p-4 flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-green-900 text-sm">Check your email</p>
+                <p className="mt-0.5 text-xs text-green-700">Click the link we sent to log in.</p>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="mt-6 rounded-2xl bg-red-50 border border-red-200 p-5">
+            <div className="mt-5 rounded-xl bg-red-50 border border-red-200 p-4">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
         </div>
 
-        {/* Social Proof */}
-        <div className="mt-10 text-center">
-          <p className="text-sm text-foreground/40">
-            Join 10,000+ parents who use The Giddy List
-          </p>
-        </div>
-
-        {/* Footer */}
-        <p className="mt-8 text-center text-xs text-foreground/30">
+        <p className="mt-6 text-center text-xs text-foreground/40">
           By continuing, you agree to our{" "}
-          <Link href="/terms" className="underline hover:text-foreground/50">terms of service</Link>
+          <Link href="/terms" className="underline hover:text-foreground/60">terms</Link>
           {" "}and{" "}
-          <Link href="/privacy" className="underline hover:text-foreground/50">privacy policy</Link>.
+          <Link href="/privacy" className="underline hover:text-foreground/60">privacy policy</Link>.
         </p>
       </div>
     </main>

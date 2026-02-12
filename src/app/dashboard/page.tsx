@@ -170,24 +170,24 @@ export default function DashboardPage() {
   const { profile, kids, registries, collections, totalClicks } = data;
 
   return (
-    <main className="min-h-screen bg-white pb-20 md:pb-0">
+    <main className="min-h-screen bg-[var(--background)] pb-20 md:pb-0">
       {/* Header */}
-      <div className="border-b border-gray-100">
-        <div className="mx-auto max-w-6xl px-8 py-10">
+      <div className="border-b border-gray-100 bg-white">
+        <div className="section-container py-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-                Welcome back{profile?.display_name ? `, ${profile.display_name.split(" ")[0]}` : ""}!
+              <h1 className="heading-lg">
+                Welcome back{profile?.display_name ? `, ${profile.display_name.split(" ")[0]}` : ""}
               </h1>
-              <p className="mt-2 text-lg text-foreground/50">
-                Manage your kids, Giddy Wishlists, and Registries
+              <p className="mt-1.5 subheading">
+                Manage your kids, wishlists, and registries
               </p>
             </div>
             <button
               onClick={() => setShowAddKid(true)}
-              className="rounded-full bg-red px-6 py-3 text-sm font-semibold text-white hover:bg-red-hover transition-colors flex items-center gap-2"
+              className="btn-primary inline-flex items-center gap-2"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Add Kid
@@ -196,21 +196,22 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-8 py-10">
+      <div className="section-container py-8">
         {/* Add Kid Modal */}
         {showAddKid && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4">
-            <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
-              <h2 className="text-2xl font-display font-bold text-foreground">Add a Kid</h2>
-              <div className="mt-6 space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 backdrop-blur-sm p-4">
+            <div className="w-full max-w-sm rounded-2xl border border-gray-100 bg-white p-6 shadow-lg">
+              <h2 className="heading-md">Add a Kid</h2>
+              <p className="mt-1 text-sm text-foreground/60">Name and optional birthday.</p>
+              <div className="mt-5 space-y-3">
                 <input
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm placeholder:text-foreground/40 focus:border-red/30 focus:ring-2 focus:ring-red/10 transition-all"
+                  className="input-premium"
                   placeholder="Name (e.g., Emma)"
                   value={newKidName}
                   onChange={(e) => setNewKidName(e.target.value)}
                 />
                 <input
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm focus:border-red/30 focus:ring-2 focus:ring-red/10 transition-all"
+                  className="input-premium"
                   type="date"
                   value={newKidBirthdate}
                   onChange={(e) => setNewKidBirthdate(e.target.value)}
@@ -220,13 +221,13 @@ export default function DashboardPage() {
                 <button
                   onClick={addKid}
                   disabled={!newKidName.trim() || saving}
-                  className="flex-1 rounded-full bg-red px-6 py-4 text-sm font-semibold text-white hover:bg-red-hover transition-colors disabled:opacity-50"
+                  className="btn-primary flex-1 disabled:opacity-50"
                 >
                   {saving ? "Adding..." : "Add Kid"}
                 </button>
                 <button
                   onClick={() => setShowAddKid(false)}
-                  className="flex-1 rounded-full border border-gray-200 px-6 py-4 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
+                  className="btn-secondary flex-1"
                 >
                   Cancel
                 </button>
@@ -235,52 +236,47 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* MY KIDS Section - kid cards are real links so they always navigate */}
-        <section className="mb-12 relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-display font-bold text-foreground">My Kids</h2>
-          </div>
-
-          <div className="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2">
+        {/* My Kids */}
+        <section className="mb-10 relative z-10">
+          <h2 className="label-uppercase mb-4">My Kids</h2>
+          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
             {kids.map((kid) => (
               <a
                 key={kid.id}
                 href={`/my-kids?kid=${encodeURIComponent(kid.id)}`}
-                className="flex-shrink-0 w-32 text-center group block cursor-pointer no-underline text-inherit relative z-10"
+                className="flex-shrink-0 w-28 text-center group block cursor-pointer no-underline text-inherit relative z-10"
               >
-                <div className="relative">
+                <div className="relative inline-block">
                   <Avatar
                     src={kid.avatar_url}
                     name={kid.name}
                     size="xl"
-                    className="mx-auto w-20 h-20 ring-4 ring-white shadow-lg group-hover:ring-red/20 transition-all pointer-events-none"
+                    className="mx-auto w-16 h-16 ring-2 ring-white shadow-md group-hover:ring-red/30 transition-all pointer-events-none rounded-full"
                   />
                   {kid.wishlists.length > 0 && (
-                    <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red text-white text-xs font-bold flex items-center justify-center pointer-events-none">
+                    <span className="absolute -bottom-0.5 -right-0.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-red text-white text-xs font-semibold flex items-center justify-center pointer-events-none">
                       {kid.wishlists.length}
                     </span>
                   )}
                 </div>
-                <div className="mt-3 font-medium text-foreground truncate text-sm">
+                <div className="mt-2 font-medium text-foreground truncate text-sm">
                   {kid.name}
                 </div>
-                <div className="text-xs text-foreground/40">
+                <div className="text-xs text-foreground/50">
                   {kid.wishlists.length} items
                 </div>
               </a>
             ))}
-
-            {/* Add Kid Card */}
             <button
               onClick={() => setShowAddKid(true)}
-              className="flex-shrink-0 w-32 text-center group"
+              className="flex-shrink-0 w-28 text-center group"
             >
-              <div className="w-20 h-20 mx-auto rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center group-hover:border-red group-hover:bg-red/5 transition-all">
-                <svg className="w-8 h-8 text-gray-300 group-hover:text-red transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center group-hover:border-red/50 group-hover:bg-red/5 transition-all">
+                <svg className="w-6 h-6 text-gray-400 group-hover:text-red transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </div>
-              <div className="mt-3 text-sm text-foreground/40 group-hover:text-red transition-colors">
+              <div className="mt-2 text-xs text-foreground/50 group-hover:text-red transition-colors">
                 Add Kid
               </div>
             </button>
@@ -288,23 +284,22 @@ export default function DashboardPage() {
         </section>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* MY GIDDY LISTS Section */}
-          <section className="rounded-3xl bg-gray-50 p-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* My Giddy Wishlists */}
+          <section className="card-premium p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Wishlists</h2>
-              <Link href="/my-kids" className="text-sm text-red hover:text-red-hover transition-colors">
-                View All
+              <h2 className="heading-md text-base">My Giddy Wishlists</h2>
+              <Link href="/my-kids" className="text-sm font-medium text-red hover:text-red-hover transition-colors">
+                View all
               </Link>
             </div>
-
-            <div className="space-y-3">
+            <div className="space-y-2">
               {kids.map((kid) => {
                 const listHref = profile?.username
                   ? `/list/${profile.username}/${kid.slug || kid.id}`
                   : `/my-kids?kid=${kid.id}`;
                 return (
-                  <div key={kid.id} className="rounded-2xl bg-white p-4 hover:shadow-md transition-shadow">
+                  <div key={kid.id} className="rounded-xl border border-gray-100 bg-white p-3.5 hover:border-gray-200 transition-colors">
                     <Link href={`/my-kids?kid=${kid.id}`} className="flex items-center gap-3">
                       <Avatar src={kid.avatar_url} name={kid.name} size="sm" />
                       <div className="flex-1 min-w-0">
@@ -321,7 +316,7 @@ export default function DashboardPage() {
                           href={listHref}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-red hover:text-red-hover transition-colors"
+                          className="text-xs font-medium text-red hover:text-red-hover transition-colors"
                         >
                           View shareable list →
                         </a>
@@ -330,25 +325,23 @@ export default function DashboardPage() {
                   </div>
                 );
               })}
-
               {kids.length === 0 && (
-                <div className="text-center py-8 text-foreground/40">
-                  <p>No kids yet. Add one to start building lists!</p>
+                <div className="rounded-xl border border-gray-100 bg-gray-50/50 py-8 text-center text-sm text-foreground/50">
+                  No kids yet. Add one above to start building lists.
                 </div>
               )}
             </div>
           </section>
 
-          {/* MY SHORTLISTS Section */}
-          <section className="rounded-3xl bg-gray-50 p-6">
+          {/* My Giddy Registries */}
+          <section className="card-premium p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-display font-bold text-foreground">My Giddy Registries</h2>
-              <Link href="/registry" className="text-sm text-red hover:text-red-hover transition-colors">
-                View All
+              <h2 className="heading-md text-base">My Giddy Registries</h2>
+              <Link href="/registry" className="text-sm font-medium text-red hover:text-red-hover transition-colors">
+                View all
               </Link>
             </div>
-
-            <div className="space-y-3">
+            <div className="space-y-2">
               {registries.map((registry) => {
                 const totalItems = registry.registry_items?.length || 0;
                 const claimedItems = registry.gift_claims?.length || 0;
@@ -357,7 +350,7 @@ export default function DashboardPage() {
                   <Link
                     key={registry.id}
                     href={`/registry/${registry.slug}/edit`}
-                    className="block rounded-2xl bg-white p-4 hover:shadow-md transition-shadow"
+                    className="block rounded-xl border border-gray-100 bg-white p-3.5 hover:border-gray-200 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
@@ -377,13 +370,10 @@ export default function DashboardPage() {
               })}
 
               {registries.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-foreground/40 mb-4">No shortlists yet</p>
-                  <Link
-                    href="/registry/new"
-                    className="inline-block rounded-full bg-red px-5 py-2.5 text-sm font-medium text-white hover:bg-red-hover transition-colors"
-                  >
-                    Create Shortlist
+                <div className="rounded-xl border border-gray-100 bg-gray-50/50 py-8 text-center">
+                  <p className="text-sm text-foreground/50 mb-3">No registries yet</p>
+                  <Link href="/registry/new" className="btn-primary text-sm inline-block">
+                    Create registry
                   </Link>
                 </div>
               )}
@@ -391,52 +381,44 @@ export default function DashboardPage() {
           </section>
         </div>
 
-        {/* GIDDY GUIDE EARNINGS Section (for guides only) */}
+        {/* Giddy Guide Earnings (for guides only) */}
         {profile?.guide_enabled && (
-          <section className="mt-8 rounded-3xl bg-gradient-to-r from-gold-light to-red-light border border-gold/20 p-6">
+          <section className="mt-8 card-premium p-5 bg-gradient-to-br from-gold-light/40 to-red-light/30 border-gold/20">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <h2 className="text-lg font-display font-bold text-foreground">Giddy Guide Earnings</h2>
-              </div>
-              <Link href="/dashboard/earnings" className="text-sm text-red hover:text-red-hover transition-colors">
-                Get Paid
+              <h2 className="heading-md text-base">Giddy Guide Earnings</h2>
+              <Link href="/dashboard/earnings" className="text-sm font-medium text-red hover:text-red-hover transition-colors">
+                Get paid
               </Link>
             </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="rounded-2xl bg-white/70 p-4 text-center">
-                <div className="text-2xl font-bold text-foreground">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-xl bg-white/80 border border-gray-100 p-3.5 text-center">
+                <div className="text-xl font-bold text-foreground">
                   ${((profile.earnings_balance || 0) + (profile.pending_earnings || 0)).toFixed(2)}
                 </div>
-                <div className="text-xs text-foreground/50 mt-1">Total</div>
+                <div className="text-xs text-foreground/50 mt-0.5">Total</div>
               </div>
-              <div className="rounded-2xl bg-white/70 p-4 text-center">
-                <div className="text-2xl font-bold text-foreground">
+              <div className="rounded-xl bg-white/80 border border-gray-100 p-3.5 text-center">
+                <div className="text-xl font-bold text-foreground">
                   ${(profile.pending_earnings || 0).toFixed(2)}
                 </div>
-                <div className="text-xs text-foreground/50 mt-1">Pending</div>
+                <div className="text-xs text-foreground/50 mt-0.5">Pending</div>
               </div>
-              <div className="rounded-2xl bg-white/70 p-4 text-center">
-                <div className="text-2xl font-bold text-foreground">
+              <div className="rounded-xl bg-white/80 border border-gray-100 p-3.5 text-center">
+                <div className="text-xl font-bold text-foreground">
                   {(totalClicks || 0).toLocaleString()}
                 </div>
-                <div className="text-xs text-foreground/50 mt-1">Clicks</div>
+                <div className="text-xs text-foreground/50 mt-0.5">Clicks</div>
               </div>
             </div>
-
-            {/* Top Guides */}
             {collections.length > 0 && (
               <div className="mt-4">
-                <div className="text-sm font-medium text-foreground/70 mb-2">Top Guides</div>
-                <div className="space-y-2">
+                <div className="text-xs font-medium text-foreground/60 mb-2 uppercase tracking-wider">Top guides</div>
+                <div className="space-y-1.5">
                   {collections.slice(0, 3).map((collection, i) => (
                     <Link
                       key={collection.id}
                       href={`/collections/${collection.slug}`}
-                      className="flex items-center gap-3 rounded-xl bg-white/50 p-3 hover:bg-white/80 transition-colors"
+                      className="flex items-center gap-3 rounded-lg bg-white/70 border border-gray-100 px-3 py-2.5 hover:bg-white transition-colors"
                     >
                       <span className="text-sm font-bold text-foreground/40">{i + 1}.</span>
                       <span className="flex-1 font-medium text-foreground truncate text-sm">
@@ -455,16 +437,13 @@ export default function DashboardPage() {
 
         {/* Become a Guide CTA (for non-guides) */}
         {!profile?.guide_enabled && (
-          <section className="mt-8 rounded-3xl bg-gradient-to-r from-gold-light to-red-light border border-gold/20 p-8 text-center">
-            <h2 className="text-2xl font-display font-bold text-foreground">Become a Giddy Guide</h2>
-            <p className="mt-2 text-foreground/60 max-w-md mx-auto">
-              Earn money when families shop your curated gift lists. No follower minimum required.
+          <section className="mt-8 card-premium p-6 text-center bg-gradient-to-br from-gold-light/30 to-red-light/20">
+            <h2 className="heading-md">Become a Giddy Guide</h2>
+            <p className="mt-2 text-sm text-foreground/60 max-w-sm mx-auto">
+              Earn when families shop your curated gift lists. No follower minimum.
             </p>
-            <Link
-              href="/dashboard/become-guide"
-              className="mt-6 inline-block rounded-full bg-red px-8 py-4 text-base font-semibold text-white hover:bg-red-hover transition-colors shadow-lg shadow-red/20"
-            >
-              Start Earning Today
+            <Link href="/dashboard/become-guide" className="mt-5 btn-primary inline-block">
+              Start earning
             </Link>
           </section>
         )}

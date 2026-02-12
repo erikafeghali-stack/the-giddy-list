@@ -48,10 +48,7 @@ function NavDropdown({
       </button>
 
       {isOpen && (
-        <div
-          className="absolute left-0 mt-2 w-56 rounded-lg bg-white py-2 animate-dropdown-fade"
-          style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}
-        >
+        <div className="absolute left-0 mt-1.5 w-52 rounded-xl border border-gray-100 bg-white py-1.5 shadow-lg animate-dropdown-fade">
           {children}
         </div>
       )}
@@ -73,7 +70,7 @@ function DropdownItem({
     <Link
       href={href}
       onClick={onClick}
-      className="block px-4 py-2.5 text-sm text-foreground/70 hover:bg-gray-50 hover:text-red transition-colors"
+      className="block px-4 py-2.5 text-sm text-foreground/80 hover:bg-gray-50 hover:text-red transition-colors"
     >
       {children}
     </Link>
@@ -243,7 +240,7 @@ export default function GlobalNav() {
             ? "bg-transparent"
             : "bg-white/98 backdrop-blur-md"
       }`}>
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
+        <div className="section-container py-3 flex items-center justify-between">
           {/* Logo - Wordmark Image */}
           <Link
             href="/"
@@ -254,7 +251,7 @@ export default function GlobalNav() {
             <img
               src="/logo.png"
               alt="The Giddy List"
-              className={`h-14 md:h-16 w-auto transition-all duration-300 ${
+              className={`h-11 md:h-12 w-auto transition-all duration-300 ${
                 isTransparent ? "brightness-0 invert" : ""
               }`}
             />
@@ -424,10 +421,7 @@ export default function GlobalNav() {
                   </button>
 
                   {profileOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-56 rounded-lg bg-white py-2 animate-dropdown-fade"
-                      style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}
-                    >
+                    <div className="absolute right-0 mt-1.5 w-52 rounded-xl border border-gray-100 bg-white py-1.5 shadow-lg animate-dropdown-fade">
                       <Link
                         href="/settings"
                         className="block px-4 py-2.5 text-sm text-foreground/70 hover:bg-gray-50 hover:text-red transition-colors"

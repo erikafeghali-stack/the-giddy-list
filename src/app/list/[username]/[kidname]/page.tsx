@@ -131,43 +131,32 @@ export default function PublicListPage({
   const age = kid.birthdate ? calculateAge(kid.birthdate) : null;
 
   return (
-    <main className="min-h-screen bg-white pb-20 md:pb-0">
-      {/* Header */}
-      <div className="bg-gradient-to-b from-red-light to-white">
-        <div className="mx-auto max-w-5xl px-6 py-12 text-center">
+    <main className="min-h-screen bg-[var(--background)] pb-20 md:pb-0">
+      <div className="border-b border-gray-100 bg-white">
+        <div className="section-container py-10 text-center">
           <Avatar
             src={kid.avatar_url}
             name={kid.name}
             size="xl"
-            className="mx-auto w-24 h-24 ring-4 ring-white shadow-xl"
+            className="mx-auto w-20 h-20 ring-2 ring-gray-100 shadow-md"
           />
-          <h1 className="mt-6 text-3xl md:text-4xl font-display font-bold text-foreground">
-            {kid.name}'s Giddy List
-          </h1>
+          <h1 className="mt-5 heading-lg">{kid.name}&apos;s Giddy List</h1>
           {age !== null && (
-            <p className="mt-2 text-lg text-foreground/60">{age} years old</p>
+            <p className="mt-1.5 text-sm text-foreground/60">{age} years old</p>
           )}
-
-          {/* Creator attribution */}
           <Link
             href={`/profile/${profile.username}`}
-            className="mt-4 inline-flex items-center gap-2 text-foreground/60 hover:text-red transition-colors"
+            className="mt-4 inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-red transition-colors"
           >
             <Avatar src={profile.avatar_url} name={profile.display_name} size="sm" />
-            <span className="text-sm">
-              by{" "}
-              <span className="font-medium">
-                {profile.display_name || profile.username}
-              </span>
-            </span>
+            <span>by <span className="font-medium text-foreground">{profile.display_name || profile.username}</span></span>
           </Link>
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        {/* Items */}
+      <div className="section-container py-8">
         {items.length === 0 ? (
-          <div className="rounded-3xl bg-gray-50 p-12 text-center">
+          <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center">
             <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <svg
                 className="w-8 h-8 text-foreground/20"
@@ -199,7 +188,7 @@ export default function PublicListPage({
                 className="group block"
               >
                 {/* Image */}
-                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100">
+                <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 border border-gray-100">
                   {item.image_url ? (
                     <Image
                       src={item.image_url}

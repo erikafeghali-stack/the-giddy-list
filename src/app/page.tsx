@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Collection, CreatorProfile, TrendingGift, AgeRange, PublicGuideProfile, GuideTier } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import ProductImage from "@/components/ProductImage";
+
 import VideoHeroGrid from "@/components/VideoHeroGrid";
 import { Gamepad2, Shirt, BookOpen, Baby, Bed, TreePine, Palette, Laptop } from "lucide-react";
 
@@ -204,9 +205,7 @@ export default function Home() {
   const [featuredCollections, setFeaturedCollections] = useState<CollectionWithCreator[]>([]);
   const [featuredCreators, setFeaturedCreators] = useState<CreatorProfile[]>([]);
   const [featuredGuides, setFeaturedGuides] = useState<(PublicGuideProfile & { collections_count?: number })[]>([]);
-  const [trendingGifts, setTrendingGifts] = useState<Record<AgeRange, TrendingGift[]>>({
-    '0-2': [], '3-5': [], '6-8': [], '9-12': [], '13-18': [],
-  });
+  const [trendingProducts, setTrendingProducts] = useState<TrendingGift[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -249,26 +248,17 @@ export default function Home() {
         setFeaturedGuides(guidesWithCounts);
       }
 
-      const ageRanges: AgeRange[] = ['0-2', '3-5', '6-8', '9-12', '13-18'];
-      const giftsData: Record<AgeRange, TrendingGift[]> = {
-        '0-2': [], '3-5': [], '6-8': [], '9-12': [], '13-18': [],
-      };
+      // Fetch trending products for homepage
+      try {
+        const res = await fetch('/api/trending-gifts?limit=8');
+        const productsData = await res.json();
+        if (productsData.success && productsData.data) {
+          setTrendingProducts(productsData.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch trending products:', err);
+      }
 
-      await Promise.all(
-        ageRanges.map(async (range) => {
-          try {
-            const res = await fetch(`/api/trending-gifts?age_range=${range}&limit=4`);
-            const data = await res.json();
-            if (data.success && data.data) {
-              giftsData[range] = data.data;
-            }
-          } catch (err) {
-            console.error(`Failed to fetch trending gifts for ${range}:`, err);
-          }
-        })
-      );
-
-      setTrendingGifts(giftsData);
       setFeaturedCollections((collectionsData || []) as CollectionWithCreator[]);
       setFeaturedCreators((creatorsData || []) as CreatorProfile[]);
       setLoading(false);
@@ -326,8 +316,8 @@ export default function Home() {
 
       {/* ===== VALUE PROPS ===== */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="text-center mb-20">
+        <div className="section-container section-padding">
+          <div className="text-center mb-14">
             <p className="text-red font-medium text-sm uppercase tracking-[0.2em] mb-5">Two ways to use Giddy List</p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight leading-tight">
               Built for families.<br className="hidden md:block" /> Powered by creators.
@@ -393,9 +383,9 @@ export default function Home() {
       </section>
 
       {/* ===== HOW IT WORKS ===== */}
-      <section id="how-it-works" className="border-t border-gray-100">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="text-center mb-20">
+      <section id="how-it-works" className="border-t border-gray-100 bg-white">
+        <div className="section-container section-padding">
+          <div className="text-center mb-14">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               How It Works
             </h2>
@@ -439,9 +429,9 @@ export default function Home() {
       </section>
 
       {/* ===== SHOP BY AGE ===== */}
-      <section className="bg-[#FAFAF8]">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="text-center mb-16">
+      <section className="bg-[var(--background)]">
+        <div className="section-container section-padding">
+          <div className="text-center mb-10">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Shop by Age
             </h2>
@@ -451,59 +441,115 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            {AGE_CATEGORIES.map((category) => {
-              const gifts = trendingGifts[category.range] || [];
-              const hasGifts = gifts.length > 0;
+            {AGE_CATEGORIES.map((category) => (
+              <Link
+                key={category.range}
+                href={`/discover/age/${category.range}`}
+                className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300"
+              >
+                <Image
+                  src={category.image}
+                  alt={category.label}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  unoptimized
+                />
 
-              return (
-                <Link
-                  key={category.range}
-                  href={`/discover/age/${category.range}`}
-                  className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-gray-100"
-                >
-                  {hasGifts ? (
-                    <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-                      {gifts.slice(0, 4).map((gift, i) => (
-                        <div key={i} className="relative overflow-hidden">
-                          <ProductImage
-                            src={gift.image_url}
-                            alt={gift.title}
-                            className="object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <Image
-                      src={category.image}
-                      alt={category.label}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      unoptimized
-                    />
-                  )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
-                    <div className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight">
-                      {category.range}
-                    </div>
-                    <div className="mt-1 text-sm text-white/70 font-medium">
-                      {category.label}
-                    </div>
+                <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                  <div className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight">
+                    {category.range}
                   </div>
-                </Link>
-              );
-            })}
+                  <div className="mt-1 text-sm text-white/70 font-medium">
+                    {category.label}
+                  </div>
+                  <div className="mt-2 text-xs text-white/50">
+                    {category.description}
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* ===== TRENDING GIFTS ===== */}
+      {trendingProducts.length > 0 && (
+        <section className="bg-white">
+          <div className="section-container section-padding">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+              <div>
+                <p className="text-red font-medium text-sm uppercase tracking-[0.2em] mb-4">Popular Right Now</p>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
+                  Trending Gifts
+                </h2>
+                <p className="mt-5 text-lg text-foreground/40 max-w-lg">
+                  Top-rated picks parents are adding to wishlists
+                </p>
+              </div>
+              <Link
+                href="/discover"
+                className="hidden md:inline-flex items-center gap-2 text-sm font-medium text-foreground/50 hover:text-red transition-colors"
+              >
+                View all products
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {trendingProducts.slice(0, 8).map((product) => (
+                <a
+                  key={product.id}
+                  href={product.affiliate_url || product.product_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-2xl bg-[#FAFAF8] border border-gray-100 overflow-hidden hover:shadow-lg hover:border-red/20 transition-all duration-300"
+                >
+                  <div className="relative aspect-square bg-white">
+                    <ProductImage
+                      src={product.image_url}
+                      alt={product.title}
+                      className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {product.age_range && (
+                      <div className="absolute top-2 right-2 bg-white/90 text-foreground/60 text-xs font-medium px-2 py-0.5 rounded-full border border-gray-100">
+                        Ages {product.age_range}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-medium text-foreground text-sm line-clamp-2 group-hover:text-red transition-colors leading-snug">
+                      {product.title}
+                    </h3>
+                    {product.price && (
+                      <div className="mt-2 text-lg font-bold text-red">
+                        ${product.price.toFixed(2)}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-10 text-center md:hidden">
+              <Link
+                href="/discover"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-foreground/15 px-8 py-3.5 text-base font-semibold text-foreground hover:border-foreground/30 transition-all"
+              >
+                View All Products
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ===== FEATURED GUIDES ===== */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div className="section-container section-padding">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
               <p className="text-gold font-medium text-sm uppercase tracking-[0.2em] mb-4">Earn While You Share</p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
@@ -601,9 +647,9 @@ export default function Home() {
       </section>
 
       {/* ===== CURATED COLLECTIONS ===== */}
-      <section className="bg-[#FAFAF8]">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <section className="bg-[var(--background)]">
+        <div className="section-container section-padding">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
               <p className="text-red font-medium text-sm uppercase tracking-[0.2em] mb-4">Editor&apos;s Picks</p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
@@ -710,8 +756,8 @@ export default function Home() {
 
       {/* ===== CATEGORIES ===== */}
       <section className="bg-white border-t border-gray-100">
-        <div className="mx-auto max-w-6xl px-8 py-32 md:py-40">
-          <div className="text-center mb-16">
+        <div className="section-container section-padding">
+          <div className="text-center mb-10">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Browse by Category
             </h2>
@@ -746,9 +792,9 @@ export default function Home() {
       </section>
 
       {/* ===== FAQ SECTION ===== */}
-      <section className="bg-[#FAFAF8]">
-        <div className="mx-auto max-w-3xl px-8 py-32 md:py-40">
-          <div className="text-center mb-16">
+      <section className="bg-[var(--background)]">
+        <div className="section-container-sm section-padding">
+          <div className="text-center mb-10">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground tracking-tight">
               Questions? Answered.
             </h2>
@@ -758,9 +804,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== BRAND DEFINITION MOMENT ===== */}
+      {/* ===== BRAND DEFINITION ===== */}
       <section className="bg-white border-t border-gray-100">
-        <div className="mx-auto max-w-2xl px-8 py-36 md:py-48 text-center">
+        <div className="section-container-sm py-16 md:py-24 text-center">
           <p
             className="text-4xl md:text-5xl lg:text-6xl font-bold italic text-foreground tracking-tight"
             style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
@@ -779,7 +825,7 @@ export default function Home() {
 
       {/* ===== FINAL CTA ===== */}
       <section className="bg-foreground text-white">
-        <div className="mx-auto max-w-4xl px-8 py-32 md:py-40 text-center">
+        <div className="section-container py-20 md:py-28 text-center">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white tracking-tight leading-[1.05]">
             Make them giddy.
           </h2>
@@ -805,7 +851,7 @@ export default function Home() {
 
       {/* ===== FOOTER ===== */}
       <footer className="bg-foreground text-white/50">
-        <div className="mx-auto max-w-6xl px-8 py-16 md:py-20">
+        <div className="section-container py-12 md:py-16">
           <div className="grid md:grid-cols-4 gap-12 md:gap-8">
             {/* Brand */}
             <div className="md:col-span-1">

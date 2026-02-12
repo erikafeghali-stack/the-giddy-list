@@ -436,72 +436,56 @@ function KidsPageContent() {
   }
 
   return (
-    <main className="min-h-screen bg-white pb-20 md:pb-0">
-      {/* Header Section */}
-      <div className="border-b border-gray-100">
-        <div className="mx-auto max-w-6xl px-8 py-10">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-            My Kids
-          </h1>
-          <p className="mt-2 text-lg text-foreground/50">
-            Store sizes and preferences so Giddy Wishlists + Registries are always correct
+    <main className="min-h-screen bg-[var(--background)] pb-20 md:pb-0">
+      {/* Header */}
+      <div className="border-b border-gray-100 bg-white">
+        <div className="section-container py-8">
+          <h1 className="heading-lg">My Kids</h1>
+          <p className="mt-1.5 subheading">
+            Sizes and preferences so wishlists and registries stay accurate
           </p>
-
-          {/* Section Navigation - Tabs */}
-          <div className="flex items-center gap-1 mt-8 border-b border-gray-100">
-            <Link
-              href="/dashboard"
-              className="px-5 py-3.5 text-sm font-medium border-b-2 border-red text-red"
-            >
+          <div className="flex items-center gap-1 mt-6 border-b border-gray-100 -mb-px">
+            <Link href="/dashboard" className="px-4 py-3 text-sm font-medium border-b-2 border-red text-red">
               My Kids
             </Link>
-            <Link
-              href="/collections"
-              className="px-5 py-3.5 text-sm font-medium border-b-2 border-transparent text-foreground/50 hover:text-foreground transition-colors"
-            >
+            <Link href="/collections" className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/50 hover:text-foreground transition-colors">
               Giddy Guides
             </Link>
-            <Link
-              href="/registry"
-              className="px-5 py-3.5 text-sm font-medium border-b-2 border-transparent text-foreground/50 hover:text-foreground transition-colors"
-            >
+            <Link href="/registry" className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-foreground/50 hover:text-foreground transition-colors">
               Giddy Registries
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-8 py-10">
-
-        <div className="grid gap-8 md:grid-cols-3">
+      <div className="section-container py-8">
+        <div className="grid gap-6 md:grid-cols-3">
           {/* Sidebar */}
-          <section className="rounded-3xl bg-gray-50/50 border border-gray-100 p-6">
-            <div className="text-base font-semibold text-foreground">Add a kid</div>
-
-            <div className="mt-5 space-y-4">
+          <section className="card-premium p-5">
+            <div className="label-uppercase mb-4">Add a kid</div>
+            <div className="space-y-3">
               <input
-                className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm placeholder:text-foreground/40 focus:bg-white focus:border-red/30 focus:ring-2 focus:ring-red/10 transition-all"
+                className="input-premium"
                 placeholder="Name (e.g., Roman)"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
               />
               <input
-                className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm focus:bg-white focus:border-red/30 focus:ring-2 focus:ring-red/10 transition-all"
+                className="input-premium"
                 type="date"
                 value={newBirthdate}
                 onChange={(e) => setNewBirthdate(e.target.value)}
               />
               <button
-                className="w-full rounded-full bg-red px-6 py-4 text-sm font-semibold text-white hover:bg-red-hover transition-colors disabled:opacity-50 shadow-sm hover:shadow-md"
+                className="btn-primary w-full disabled:opacity-50"
                 onClick={addKid}
                 disabled={!newName.trim() || !!saving}
               >
                 Add Kid
               </button>
             </div>
-
-            <div className="mt-8 border-t border-gray-200/60 pt-6">
-              <div className="text-base font-semibold text-foreground">Your kids</div>
+            <div className="mt-6 pt-5 border-t border-gray-100">
+              <div className="label-uppercase mb-3">Your kids</div>
               {loading ? (
                 <div className="mt-5 text-center py-4">
                   <div className="inline-block w-6 h-6 border-2 border-red/20 border-t-red rounded-full animate-spin" />
@@ -528,7 +512,7 @@ function KidsPageContent() {
           </section>
 
           {/* Main Content */}
-          <section className="md:col-span-2 rounded-3xl bg-gray-50/50 border border-gray-100 p-6 md:p-8">
+          <section className="md:col-span-2 card-premium p-5 md:p-6">
             {!selectedKid ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
